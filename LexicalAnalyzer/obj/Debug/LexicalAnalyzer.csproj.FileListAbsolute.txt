@@ -1,0 +1,32 @@
+c:\users\asad\documents\visual studio 2013\Projects\LexicalAnalyzer\LexicalAnalyzer\bin\Debug\LexicalAnalyzer.exe.config
+c:\users\asad\documents\visual studio 2013\Projects\LexicalAnalyzer\LexicalAnalyzer\bin\Debug\LexicalAnalyzer.exe
+c:\users\asad\documents\visual studio 2013\Projects\LexicalAnalyzer\LexicalAnalyzer\bin\Debug\LexicalAnalyzer.pdb
+c:\users\asad\documents\visual studio 2013\Projects\LexicalAnalyzer\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.csprojResolveAssemblyReference.cache
+c:\users\asad\documents\visual studio 2013\Projects\LexicalAnalyzer\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.Form1.resources
+c:\users\asad\documents\visual studio 2013\Projects\LexicalAnalyzer\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.Properties.Resources.resources
+c:\users\asad\documents\visual studio 2013\Projects\LexicalAnalyzer\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.csproj.GenerateResource.Cache
+c:\users\asad\documents\visual studio 2013\Projects\LexicalAnalyzer\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.exe
+c:\users\asad\documents\visual studio 2013\Projects\LexicalAnalyzer\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.pdb
+C:\Users\Asad\documents\visual studio 2013\Projects\LexicalAnalyzer\LexicalAnalyzer\bin\Debug\FastColoredTextBox.dll
+C:\Users\Asad\documents\visual studio 2013\Projects\LexicalAnalyzer\LexicalAnalyzer\bin\Debug\TabStrip.dll
+C:\Users\Asad\documents\visual studio 2013\Projects\LexicalAnalyzer\LexicalAnalyzer\bin\Debug\FastColoredTextBox.xml
+C:\Users\DrkKnight\Documents\Visual Studio 2013\compiler\master\LexicalAnalyzer\bin\Debug\LexicalAnalyzer.exe.config
+C:\Users\DrkKnight\Documents\Visual Studio 2013\compiler\master\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.exe
+C:\Users\DrkKnight\Documents\Visual Studio 2013\compiler\master\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.pdb
+C:\Users\DrkKnight\Documents\Visual Studio 2013\compiler\master\LexicalAnalyzer\bin\Debug\LexicalAnalyzer.exe
+C:\Users\DrkKnight\Documents\Visual Studio 2013\compiler\master\LexicalAnalyzer\bin\Debug\LexicalAnalyzer.pdb
+C:\Users\DrkKnight\Documents\Visual Studio 2013\compiler\master\LexicalAnalyzer\bin\Debug\FastColoredTextBox.xml
+C:\Users\DrkKnight\Documents\Visual Studio 2013\compiler\master\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.csprojResolveAssemblyReference.cache
+C:\Users\DrkKnight\Documents\Visual Studio 2013\compiler\master\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.Form1.resources
+C:\Users\DrkKnight\Documents\Visual Studio 2013\compiler\master\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.Properties.Resources.resources
+C:\Users\DrkKnight\Documents\Visual Studio 2013\compiler\master\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.csproj.GenerateResource.Cache
+C:\data\compilerconst\LexicalAnalyzer\bin\Debug\LexicalAnalyzer.exe.config
+C:\data\compilerconst\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.exe
+C:\data\compilerconst\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.pdb
+C:\data\compilerconst\LexicalAnalyzer\bin\Debug\LexicalAnalyzer.exe
+C:\data\compilerconst\LexicalAnalyzer\bin\Debug\LexicalAnalyzer.pdb
+C:\data\compilerconst\LexicalAnalyzer\bin\Debug\FastColoredTextBox.xml
+C:\data\compilerconst\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.csprojResolveAssemblyReference.cache
+C:\data\compilerconst\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.Form1.resources
+C:\data\compilerconst\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.Properties.Resources.resources
+C:\data\compilerconst\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.csproj.GenerateResource.Cache
