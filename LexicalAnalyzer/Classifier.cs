@@ -234,16 +234,11 @@ namespace LexicalAnalyzer
                     case "-":
                     case ".":
                         if (classify.isInt(token.value))
-                        {
-                            if (classify.isFloat(token.value))
+                           token.classKeyword = "int_const";
+                        else if (classify.isFloat(token.value))
                                 token.classKeyword = "float_const";
-                            else
-                                token.classKeyword = "int_const";
-                        }
-                        else
-                        {
-                            token.classKeyword = "invalid_token";
-                        }
+                             else                        
+                                token.classKeyword = "invalid_token";
                         break;
                     case "\"":
                         if (token.value[token.value.Length - 1] != '\"')
@@ -262,6 +257,7 @@ namespace LexicalAnalyzer
                         }
                         break;
                     case "\'":
+                        token.value = token.value.Trim('\'');
                         if (classify.isChar(token.value))
                         {
                             token.classKeyword = "char_const";
