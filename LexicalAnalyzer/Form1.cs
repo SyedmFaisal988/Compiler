@@ -196,6 +196,13 @@ namespace LexicalAnalyzer
             foreach(Token t in StaticComponents.tokenSet)
                 hh+=t.ToString()+"\n";
             MessageBox.Show(hh);
+            Classifier classify = new Classifier();
+            classify.classifier();
+            //MessageBox.Show(classify.test());
+            hh = "";
+            foreach (Token t in StaticComponents.tokenSet)
+                hh += t.ToString() + "\n";
+            MessageBox.Show(hh);
         }
         public bool regexCheck(dynamic keyword, int type)
         {

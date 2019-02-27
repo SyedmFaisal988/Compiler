@@ -71,7 +71,7 @@ namespace LexicalAnalyzer
 
         string isKeyword(string word)
         {
-            int keywordSize = keywords.Length;
+            int keywordSize = keywords.Length/2;
             string classPart = "";
             for (int i = 0; i < keywordSize; i++)
             {
@@ -87,7 +87,7 @@ namespace LexicalAnalyzer
 
         string isOpr(string word)
         {
-            int operatorSize = operators.Length;
+            int operatorSize = operators.Length/2;
             string classPart = "";
             for (int i = 0; i < operatorSize; i++)
             {
@@ -102,13 +102,13 @@ namespace LexicalAnalyzer
 
         string isPunct(string word)
         {
-            int punctSize = puntuators.Length;
+            int punctSize = puntuators.Length/2;
             string classPart = "";
             for (int i = 0; i < punctSize; i++)
             {
-                if (operators[i, 1] == word)
+                if (puntuators[i, 1] == word)
                 {
-                    classPart = operators[i, 0];
+                    classPart = puntuators[i, 0];
                     break;
                 }
             }
@@ -117,8 +117,14 @@ namespace LexicalAnalyzer
 
         bool isIdentifier(string word)
         {
-            Regex reg = new Regex("^[A-Za-z_]{1,1}[A-Za-z_0-9]{0,30}[A-Za-z0-9]{1,1}$");
-            return reg.IsMatch(word);
+            bool status = false;
+            Regex reg = new Regex("^[A-Za-z_][A-Za-z_0-9]{0,30}$");
+            Regex reg1 = new Regex("[A-Za-z0-9]$");
+            if (reg1.IsMatch(word))
+            {
+                status = reg.IsMatch(word);
+            }
+            return status;
         }
 
         bool isInt(string word)
@@ -180,16 +186,16 @@ namespace LexicalAnalyzer
             if (isIdentifier(tokenValue))
             {
                 classPart = isKeyword(tokenValue);
-                if (classPart == null)
+                if (classPart == "")
                     classPart = "ID";
             }
             else
             {
                 classPart = isPunct(tokenValue);
-                if (classPart == null)
+                if (classPart == "")
                 {
                     classPart = isOpr(tokenValue);
-                    if (classPart == null)
+                    if (classPart == "")
                     {
                         classPart = "invalid_token";
                     }
@@ -198,18 +204,35 @@ namespace LexicalAnalyzer
             return classPart;
         }
 
-        void classifier()
+        public string test()
         {
-            char firstWord;
+            string test = "";
+            string temp ;
+            foreach(var token in StaticComponents.tokenSet)
+            {
+                if (token.value != "")
+                    temp = token.value[0].ToString();
+                    test += token.value[0].ToString()+" ";
+            }
+            return test;
+        }
+
+        public void classifier()
+        {
+            string firstWord;
             Classifier classify = new Classifier();
             foreach (Token token in StaticComponents.tokenSet)
             {
-                firstWord = token.value[0];
+                if (token.value == "")
+                {
+                    break;
+                }
+                firstWord = token.value[0].ToString();
                 switch (firstWord)
                 {
-                    case '+':
-                    case '-':
-                    case '.':
+                    case "+":
+                    case "-":
+                    case ".":
                         if (classify.isInt(token.value))
                         {
                             if (classify.isFloat(token.value))
@@ -222,7 +245,13 @@ namespace LexicalAnalyzer
                             token.classKeyword = "invalid_token";
                         }
                         break;
-                    case '\"':
+                    case "\"":
+                        if (token.value[token.value.Length - 1] != '\"')
+                        {
+                            token.classKeyword = "invalid";
+                            break;
+                        }
+                        token.value = token.value.Trim('"');
                         if (classify.isString(token.value))
                         {
                             token.classKeyword = "string_const";
@@ -232,7 +261,7 @@ namespace LexicalAnalyzer
                             token.classKeyword = "invalid_token";
                         }
                         break;
-                    case '\'':
+                    case "\'":
                         if (classify.isChar(token.value))
                         {
                             token.classKeyword = "char_const";
@@ -242,7 +271,7 @@ namespace LexicalAnalyzer
                             token.classKeyword = "invalid_token";
                         }
                         break;
-                    case '_':
+                    case "_":
                         if (classify.isIdentifier(token.value))
                         {
                             token.classKeyword = "ID";
