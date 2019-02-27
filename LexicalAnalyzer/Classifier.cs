@@ -8,7 +8,7 @@ namespace LexicalAnalyzer
 {
     class Classifier
     {
-        string[,] keywords = { 
+        string[,] keywords = {
                 { "dt", "int" },
                 { "dt", "float" },
                 { "dt", "string" },
@@ -73,7 +73,7 @@ namespace LexicalAnalyzer
         {
             int keywordSize = keywords.Length;
             string classPart = "";
-            for(int i=0; i< keywordSize; i++)
+            for (int i = 0; i < keywordSize; i++)
             {
                 if (keywords[i, 1] == word)
                 {
@@ -89,9 +89,9 @@ namespace LexicalAnalyzer
         {
             int operatorSize = operators.Length;
             string classPart = "";
-            for(int i=0; i < operatorSize; i++)
+            for (int i = 0; i < operatorSize; i++)
             {
-                if(operators[i,1] == word)
+                if (operators[i, 1] == word)
                 {
                     classPart = operators[i, 0];
                     break;
@@ -104,9 +104,9 @@ namespace LexicalAnalyzer
         {
             int punctSize = puntuators.Length;
             string classPart = "";
-            for(int i=0; i<punctSize; i++)
+            for (int i = 0; i < punctSize; i++)
             {
-                if(operators[i,1] == word)
+                if (operators[i, 1] == word)
                 {
                     classPart = operators[i, 0];
                     break;
@@ -144,13 +144,118 @@ namespace LexicalAnalyzer
             }
             return status;
         }
+        bool isString(string word)
+        {
+            Regex reg2 = new Regex("^[\\\\][\\\'\"ntrn]$");
+            Regex reg = new Regex("^[^\\\\\'\"]$");
+            bool status = true;
+            string temp = "";
+            for (int i = 0; i < word.Length; i++)
+            {
+                if (reg.IsMatch(word[i].ToString()))
+                {
+                    status = true;
+                }
+                else
+                {
+                    temp = word[i].ToString() + word[++i].ToString();
+                    if (reg2.IsMatch(temp))
+                    {
+                        status = true;
+                        temp = "";
+                    }
+                    else
+                    {
+                        status = false;
+                        break;
+                    }
+                }
+            }
+            return status;
+        }
+
+        string getClass(string tokenValue)
+        {
+            string classPart = "";
+            if (isIdentifier(tokenValue))
+            {
+                classPart = isKeyword(tokenValue);
+                if (classPart == null)
+                    classPart = "ID";
+            }
+            else
+            {
+                classPart = isPunct(tokenValue);
+                if (classPart == null)
+                {
+                    classPart = isOpr(tokenValue);
+                    if (classPart == null)
+                    {
+                        classPart = "invalid_token";
+                    }
+                }
+            }
+            return classPart;
+        }
 
         void classifier()
         {
-            foreach(Token token in StaticComponents.tokenSet)
+            char firstWord;
+            Classifier classify = new Classifier();
+            foreach (Token token in StaticComponents.tokenSet)
             {
-                char firstWord = token.value[0];
-                
+                firstWord = token.value[0];
+                switch (firstWord)
+                {
+                    case '+':
+                    case '-':
+                    case '.':
+                        if (classify.isInt(token.value))
+                        {
+                            if (classify.isFloat(token.value))
+                                token.classKeyword = "float_const";
+                            else
+                                token.classKeyword = "int_const";
+                        }
+                        else
+                        {
+                            token.classKeyword = "invalid_token";
+                        }
+                        break;
+                    case '\"':
+                        if (classify.isString(token.value))
+                        {
+                            token.classKeyword = "string_const";
+                        }
+                        else
+                        {
+                            token.classKeyword = "invalid_token";
+                        }
+                        break;
+                    case '\'':
+                        if (classify.isChar(token.value))
+                        {
+                            token.classKeyword = "char_const";
+                        }
+                        else
+                        {
+                            token.classKeyword = "invalid_token";
+                        }
+                        break;
+                    case '_':
+                        if (classify.isIdentifier(token.value))
+                        {
+                            token.classKeyword = "ID";
+                        }
+                        else
+                        {
+                            token.classKeyword = "invalid_token";
+                        }
+                        break;
+                    default:
+                        token.classKeyword = getClass(token.value);
+                        break;
+                }
             }
         }
     }
