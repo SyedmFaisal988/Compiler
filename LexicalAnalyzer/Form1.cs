@@ -91,7 +91,7 @@ namespace LexicalAnalyzer
                     if (temp == "")
                         temp += c;
                     // temp .
-                    else if (regexCheck(temp, 5))
+                    else if (regexCheck(temp, 5) || regexCheck(temp, 9))
                     {
                         addTokenToList(temp);
                         temp = c.ToString();
@@ -117,7 +117,7 @@ namespace LexicalAnalyzer
                 else if (regexCheck(c, 2))
                 {
                     //temp alphanumeric or .numalpha
-                    if (regexCheck(temp, 1) || regexCheck(temp, 7))
+                    if (regexCheck(temp, 1) || regexCheck(temp, 7) || regexCheck(temp, 9))
                     {
                         temp += c;
                     }
@@ -157,7 +157,35 @@ namespace LexicalAnalyzer
                         }
                         else if (temp == "")
                         {
+                            if (regexCheck(c, 9))
+                                temp += c;
+                            else
                             addTokenToList(c.ToString());
+                        }
+                        //checking if c is + || - for 
+                        else if (regexCheck(c, 9))
+                        {
+                            if(temp!="" && !regexCheck(temp, 9))
+                            {
+                                addTokenToList(temp);
+                                temp = c.ToString();
+                            }else if (!regexCheck(temp, 9))
+                            {
+                                temp += c;
+                            }
+                            //check if same ++ || --
+                            else if(temp==c.ToString())
+                            {
+                                temp += c;
+                                addTokenToList(temp);
+                                temp = "";
+                            }
+                                else
+                                {
+                                    addTokenToList(temp);
+                                    //addTokenToList(c.ToString());
+                                    temp = c.ToString();
+                                }
                         }
                         else
                         {
@@ -240,6 +268,12 @@ namespace LexicalAnalyzer
                 // check string if only alphabets
                 case 8:
                     regex = @"^[a-zA-Z]*$";
+                    break;
+                case 9:
+                    regex = "^[+-]$";
+                    break;
+                case 10:
+                    regex = "^[+-*/=]$";
                     break;
                 default:
                     break;
