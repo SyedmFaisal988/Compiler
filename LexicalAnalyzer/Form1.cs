@@ -243,7 +243,7 @@ namespace LexicalAnalyzer
                     break;
                 //string check if only numric
                 case 2:
-                    regex = @"^[0-9]*$";
+                    regex = @"^[+-]?[0-9]+$";
                     break;
                 //char check if punctuator
                 case 3:
@@ -263,7 +263,7 @@ namespace LexicalAnalyzer
                     break;
                 //check string is .numalpha
                 case 7:
-                    regex = @"^[0-9]*[.]?[a-zA-Z0-9_]*$";
+                    regex = @"^[+-]?[0-9]*[.]?[a-zA-Z0-9_]*$";
                     break;
                 // check string if only alphabets
                 case 8:
