@@ -135,7 +135,7 @@ namespace LexicalAnalyzer
 
         bool isFloat(string word)
         {
-            Regex reg = new Regex("^[+-]{0,1}[0-9]{0,7}.[0-9]{1,7}$");
+            Regex reg = new Regex("^[+-]?[0-9]{0,7}.[0-9]{1,7}$");
             return reg.IsMatch(word);
         }
 
@@ -227,12 +227,20 @@ namespace LexicalAnalyzer
                 {
                     break;
                 }
-                firstWord = token.value[0].ToString();
+                if (char.IsDigit(token.value[0]))
+                {
+                    firstWord = "0";
+                }
+                else
+                {
+                    firstWord = token.value[0].ToString();
+                }
                 switch (firstWord)
                 {
                     case "+":
                     case "-":
                     case ".":
+                    case "0":
                         if (classify.isInt(token.value))
                            token.classKeyword = "int_const";
                         else if (classify.isFloat(token.value))
