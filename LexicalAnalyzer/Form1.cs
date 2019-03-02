@@ -150,43 +150,64 @@ namespace LexicalAnalyzer
                         }
                         else if (c == '"')
                         {
-                            if(temp!="")
+                            if (temp != "")
                                 addTokenToList(temp);
                             temp = "";
                             temp += c;
                         }
-                        else if (temp == "")
+                        else if (temp == "" && c != '=')
                         {
                             if (regexCheck(c, 9))
                                 temp += c;
                             else
-                            addTokenToList(c.ToString());
+                                addTokenToList(c.ToString());
                         }
                         //checking if c is + || - for 
-                        else if (regexCheck(c, 9))
+                        else if (regexCheck(c, 9) )
                         {
-                            if(temp!="" && !regexCheck(temp, 9))
+                            if (temp != "" && !regexCheck(temp, 9))
                             {
                                 addTokenToList(temp);
                                 temp = c.ToString();
-                            }else if (!regexCheck(temp, 9))
+                            } else if (!regexCheck(temp, 9))
                             {
                                 temp += c;
                             }
-                            //check if same ++ || --
-                            else if(temp==c.ToString())
+                            //check if same ++ || -- || += || +-
+                            else if (temp == c.ToString())
                             {
                                 temp += c;
                                 addTokenToList(temp);
                                 temp = "";
                             }
-                                else
-                                {
-                                    addTokenToList(temp);
-                                    //addTokenToList(c.ToString());
-                                    temp = c.ToString();
-                                }
+                            else
+                            {
+                                addTokenToList(temp);
+                                //addTokenToList(c.ToString());
+                                temp = c.ToString();
+                            }
+                        } //check if *=
+                        else if (c=='=')
+                        {
+                            if(regexCheck(temp, 10))
+                            {
+                                temp += c;
+                                addTokenToList(temp);
+                                temp = "";
+                            }
+                            else if (temp != "=")
+                            {
+                                addTokenToList(temp);
+                                temp = c.ToString();
+                            }
+                            else
+                            {
+                                temp += c;
+                                addTokenToList(temp);
+                                temp = "";
+                            }
                         }
+                        
                         else
                         {
                             addTokenToList(temp);
@@ -273,7 +294,7 @@ namespace LexicalAnalyzer
                     regex = "^[+-]$";
                     break;
                 case 10:
-                    regex = "^[+-*/=]$";
+                    regex = "^[-+\\*\\/]$";
                     break;
                 default:
                     break;

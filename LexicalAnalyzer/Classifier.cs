@@ -53,6 +53,8 @@ namespace LexicalAnalyzer
             { "compAss", "*="},
             { "compAss", "/="},
             { "compAss", "%="},
+            { "inc", "++"},
+            {"dec", "--" },
         };
 
         string[,] puntuators =
@@ -242,11 +244,11 @@ namespace LexicalAnalyzer
                     case ".":
                     case "0":
                         if (classify.isInt(token.value))
-                           token.classKeyword = "int_const";
+                            token.classKeyword = "int_const";
                         else if (classify.isFloat(token.value))
-                                token.classKeyword = "float_const";
-                             else                        
-                                token.classKeyword = "invalid_token";
+                            token.classKeyword = "float_const";
+                        else
+                            token.classKeyword = getClass(token.value);
                         break;
                     case "\"":
                         if (token.value[token.value.Length - 1] != '\"')
