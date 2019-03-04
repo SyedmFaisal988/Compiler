@@ -222,12 +222,16 @@ namespace LexicalAnalyzer
         public void classifier()
         {
             string firstWord;
+            int index = 0;
             Classifier classify = new Classifier();
+            List<int> error = new List<int>();
             foreach (Token token in StaticComponents.tokenSet)
             {
+                index++;
                 if (token.value == "")
                 {
-                    break;
+                    error.Add(index-1);
+                    continue;
                 }
                 if (char.IsDigit(token.value[0]))
                 {
@@ -291,6 +295,12 @@ namespace LexicalAnalyzer
                         token.classKeyword = getClass(token.value);
                         break;
                 }
+            }
+            index=0;
+            foreach(int i in error)
+            {
+                StaticComponents.tokenSet.RemoveAt(i-index);
+                index++;
             }
         }
     }
