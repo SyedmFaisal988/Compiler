@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace LexicalAnalyzer
 {
@@ -55,9 +56,16 @@ namespace LexicalAnalyzer
             StaticComponents.tokenSet.Clear();
             string source = fctb.Text, temp = "";
             bool commentFlag = false;
+            bool charr = false;
             foreach (char c in source)
             {
-                if(c!='/' && temp!="" && temp.Last() == '/')
+                if (charr && temp.Length >= 4)
+                {
+                    addTokenToList(temp);
+                    temp = "";
+                    charr = false;
+                }
+                if (c!='/' && temp!="" && temp.Last() == '/')
                 {
                     addTokenToList(temp);
                     temp = "";
@@ -97,6 +105,26 @@ namespace LexicalAnalyzer
                         {
                             temp += c;
                         }
+                    }
+                }
+                else if (c == '\'' || charr)
+                {
+                   if(temp!="" && regexCheck(temp, 11))
+                    {
+                        if (c != '\'')
+                        {
+                            temp += c;
+                        }else
+                        {
+                            temp += c;
+                            addTokenToList(temp);
+                            temp = "";
+                            charr = false;
+                        }
+                    }
+                   else if (temp == ""){
+                        temp += c;
+                        charr = true;
                     }
                 }
                 // c alphabet
@@ -214,7 +242,8 @@ namespace LexicalAnalyzer
                                 //addTokenToList(c.ToString());
                                 temp = c.ToString();
                             }
-                        } //check if *=
+                        }
+                        //check if *=
                         else if (c=='=')
                         {
                             if(regexCheck(temp, 10))
@@ -261,6 +290,7 @@ namespace LexicalAnalyzer
                             }
                         }
                     }
+
                     else
                     {
                         temp += c;
@@ -280,6 +310,9 @@ namespace LexicalAnalyzer
             foreach (Token t in StaticComponents.tokenSet)
                 hh += t.ToString() + "\n";
             MessageBox.Show(hh);
+            StreamWriter sw = new StreamWriter("Token.txt");
+            sw.WriteLine(hh);
+            sw.Close();
         }
         public bool regexCheck(dynamic keyword, int type)
         {
@@ -322,7 +355,13 @@ namespace LexicalAnalyzer
                     regex = "^[+-]$";
                     break;
                 case 10:
-                    regex = "^[-+\\*\\/]$";
+                    regex = "^[-+\\*\\/><]$";
+                    break;
+                case 11:
+                    regex = "^'\\\\?[^`]?$";
+                    break;
+                case 12:
+                    regex = "\'$";
                     break;
                 default:
                     break;

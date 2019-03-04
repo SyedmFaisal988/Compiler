@@ -131,7 +131,7 @@ namespace LexicalAnalyzer
 
         bool isInt(string word)
         {
-            Regex reg = new Regex("^[0-9]{1,7}$");
+            Regex reg = new Regex("^[-+]?[0-9]{1,7}$");
             return reg.IsMatch(word);
         }
 
