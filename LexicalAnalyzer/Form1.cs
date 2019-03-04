@@ -54,10 +54,39 @@ namespace LexicalAnalyzer
         {
             StaticComponents.tokenSet.Clear();
             string source = fctb.Text, temp = "";
+            bool commentFlag = false;
             foreach (char c in source)
             {
-                if (c == 32){
-                    if (temp != ""){
+                if(c!='/' && temp!="" && temp.Last() == '/')
+                {
+                    addTokenToList(temp);
+                    temp = "";
+                    commentFlag = false;
+                }  
+                if (c == 13)
+                {
+                    if (temp != "")
+                    {
+                        addTokenToList(temp);
+                        temp = "";
+                    }
+                    wordNumber = 1;
+                    commentFlag = false;
+                }
+                else if (c==10)
+                {
+                    lineNumber++;
+                    index = 0;
+                    wordNumber = 1;
+                }
+                else if (commentFlag)
+                {
+                    continue;
+                }
+                else if (c == 32)
+                {
+                    if (temp != "")
+                    {
                         //temp not starting with "
                         if (!regexCheck(temp, 6))
                         {
@@ -69,21 +98,6 @@ namespace LexicalAnalyzer
                             temp += c;
                         }
                     }
-                }
-                else if (c == 13)
-                {
-                    if (temp != "")
-                    {
-                        addTokenToList(temp);
-                        temp = "";
-                    }
-                    wordNumber = 1;
-                }
-                else if (c==10)
-                {
-                    lineNumber++;
-                    index = 0;
-                    wordNumber = 1;
                 }
                 // c alphabet
                 else if (regexCheck(c,8))
@@ -133,8 +147,22 @@ namespace LexicalAnalyzer
                     //temp not starting with "
                     if (!regexCheck(temp, 6))
                     {
+                        if (temp == "" && c == '/')
+                        {
+                            temp = c.ToString();
+                        }else
+                        if (c=='/' && temp!="" && temp.Last() != '/')
+                        {
+                            addTokenToList(temp);
+                            temp = c.ToString();
+                        }
+                        else if (temp != "" && temp.Last() == '/')
+                        {
+                            temp = "";
+                            commentFlag = true;
+                        }
                         //c is a .
-                        if (c == '.')
+                        else  if (c == '.')
                         {
                             //temp is numeric
                             if (regexCheck(temp, 2))
