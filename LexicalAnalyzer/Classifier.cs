@@ -73,7 +73,7 @@ namespace LexicalAnalyzer
 
         string isKeyword(string word)
         {
-            int keywordSize = keywords.Length/2;
+            int keywordSize = keywords.Length / 2;
             string classPart = "";
             for (int i = 0; i < keywordSize; i++)
             {
@@ -89,7 +89,7 @@ namespace LexicalAnalyzer
 
         string isOpr(string word)
         {
-            int operatorSize = operators.Length/2;
+            int operatorSize = operators.Length / 2;
             string classPart = "";
             for (int i = 0; i < operatorSize; i++)
             {
@@ -104,7 +104,7 @@ namespace LexicalAnalyzer
 
         string isPunct(string word)
         {
-            int punctSize = puntuators.Length/2;
+            int punctSize = puntuators.Length / 2;
             string classPart = "";
             for (int i = 0; i < punctSize; i++)
             {
@@ -141,23 +141,19 @@ namespace LexicalAnalyzer
             return reg.IsMatch(word);
         }
 
-        bool isChar(string word)
-        {
-            bool status = false;
-            Regex reg = new Regex("^[\\\\][\\\\\'\"ntrn]$");
-            Regex reg2 = new Regex("^[^\\\\\'\"]$");
-            if (reg.IsMatch(word) || reg2.IsMatch(word))
-            {
-                status = !status;
-            }
-            return status;
-        }
         bool isString(string word)
         {
-            Regex reg2 = new Regex("^[\\\\][\\\'\"ntrn]$");
-            Regex reg = new Regex("^[^\\\\\'\"]$");
+            Regex reg2 = new Regex("^[\\\\][\\\\\"ntra]$");
+            Regex reg = new Regex("^[^\\\\\"]$");
             bool status = true;
             string temp = "";
+            if (word[0] != '\"' || word.Last() != '\"')
+            {
+                return false;
+            }
+            Console.WriteLine(word.Last());
+            word = word.Substring(1, word.Length - 2);
+            Console.WriteLine(word);
             for (int i = 0; i < word.Length; i++)
             {
                 if (reg.IsMatch(word[i].ToString()))
@@ -166,7 +162,15 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    temp = word[i].ToString() + word[++i].ToString();
+                    try
+                    {
+                        temp = word[i].ToString() + word[++i].ToString();
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        Console.WriteLine("exp say");
+                        return false;
+                    }
                     if (reg2.IsMatch(temp))
                     {
                         status = true;
@@ -178,6 +182,17 @@ namespace LexicalAnalyzer
                         break;
                     }
                 }
+            }
+            return status;
+        }
+        bool isChar(string word)
+        {
+            bool status = false;
+            Regex reg = new Regex("^\'[\\\\][\\\\\'\"ntrn]\'$");
+            Regex reg2 = new Regex("^\'[^\\\\\'\"]\'$");
+            if (reg.IsMatch(word) || reg2.IsMatch(word))
+            {
+                status = !status;
             }
             return status;
         }
@@ -209,12 +224,12 @@ namespace LexicalAnalyzer
         public string test()
         {
             string test = "";
-            string temp ;
-            foreach(var token in StaticComponents.tokenSet)
+            string temp;
+            foreach (var token in StaticComponents.tokenSet)
             {
                 if (token.value != "")
                     temp = token.value[0].ToString();
-                    test += token.value[0].ToString()+" ";
+                test += token.value[0].ToString() + " ";
             }
             return test;
         }
@@ -230,7 +245,7 @@ namespace LexicalAnalyzer
                 index++;
                 if (token.value == "")
                 {
-                    error.Add(index-1);
+                    error.Add(index - 1);
                     continue;
                 }
                 if (char.IsDigit(token.value[0]))
@@ -255,14 +270,9 @@ namespace LexicalAnalyzer
                             token.classKeyword = getClass(token.value);
                         break;
                     case "\"":
-                        if (token.value[token.value.Length - 1] != '\"')
-                        {
-                            token.classKeyword = "invalid";
-                            break;
-                        }
-                        token.value = token.value.Trim('"');
                         if (classify.isString(token.value))
                         {
+                            token.value = token.value.Substring(1, token.value.Length - 2);
                             token.classKeyword = "string_const";
                         }
                         else
@@ -271,9 +281,9 @@ namespace LexicalAnalyzer
                         }
                         break;
                     case "\'":
-                        token.value = token.value.Trim('\'');
                         if (classify.isChar(token.value))
                         {
+                            token.value = token.value.Trim('\'');
                             token.classKeyword = "char_const";
                         }
                         else
@@ -296,10 +306,10 @@ namespace LexicalAnalyzer
                         break;
                 }
             }
-            index=0;
-            foreach(int i in error)
+            index = 0;
+            foreach (int i in error)
             {
-                StaticComponents.tokenSet.RemoveAt(i-index);
+                StaticComponents.tokenSet.RemoveAt(i - index);
                 index++;
             }
         }

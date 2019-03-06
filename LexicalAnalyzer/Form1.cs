@@ -59,6 +59,7 @@ namespace LexicalAnalyzer
             bool charr = false;
             foreach (char c in source)
             {
+                //MessageBox.Show(((int)c).ToString());
                 if (charr && temp.Length >= 4)
                 {
                     addTokenToList(temp);
