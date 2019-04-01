@@ -172,24 +172,29 @@ namespace LexicalAnalyzer
                     {
                         if (source.Length != (i + 1))
                         {
-                            testString = c.ToString() + source.ElementAt(i + 1);
-                            if (compoundCheck(testString))
+                            try
                             {
-                                i++;
-                                addTokenToList(testString);
-                            }
-                            else
-                            {
-                                //+- check
-                                if (regexCheck(c, 5))
+                                testString = c.ToString() + source.ElementAt(i + 1);
+                                if (compoundCheck(testString))
                                 {
-                                    temp += c;
+                                    i++;
+                                    addTokenToList(testString);
                                 }
                                 else
                                 {
-                                    addTokenToList(c);
+                                    //+- check
+                                    if (regexCheck(c, 5))
+                                    {
+                                        temp += c;
+                                    }
+                                    else
+                                    {
+                                        addTokenToList(c);
+                                    }
                                 }
                             }
+                            catch (Exception) { }
+
                         }
                         else if (c != 10 || c != 13)
                         {
@@ -270,7 +275,13 @@ namespace LexicalAnalyzer
                     //if char is a punctuator
                     else
                     {
-                        if (c == '.')
+                        if (c == '\'')
+                        {
+                            addTokenToList(temp);
+                            goto start;
+                        }
+                        else
+                            if (c == '.')
                         {
                             //if temp is only numbers
                             if (regexCheck(temp, 5))
@@ -366,6 +377,10 @@ namespace LexicalAnalyzer
             hh = "Classifier \n\r";
             foreach (Token t in StaticComponents.tokenSet)
                 hh += t.ToString() + "\n";
+            System.IO.StreamWriter sw = new System.IO.StreamWriter("Token.txt");
+            foreach (Token t in StaticComponents.tokenSet)
+                sw.WriteLine(t.ToString());
+            sw.Close();
             MessageBox.Show(hh);
         }
         public bool regexCheck(dynamic keyword, int type)
