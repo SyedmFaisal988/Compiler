@@ -8,7 +8,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 
 namespace LexicalAnalyzer
 {
@@ -35,7 +34,8 @@ namespace LexicalAnalyzer
             openFileDialog1.CheckPathExists = true;
             openFileDialog1.FileName = null;
             DialogResult result = openFileDialog1.ShowDialog();
-            if (result == DialogResult.OK) {
+            if (result == DialogResult.OK)
+            {
                 fctb.Text = System.IO.File.ReadAllText(openFileDialog1.FileName);
             }
         }
@@ -51,322 +51,354 @@ namespace LexicalAnalyzer
         }
 
         public int index = 0, wordNumber = 1, lineNumber = 1;
+        string temp = "", testString;
+
         public void breakKeywords()
         {
             StaticComponents.tokenSet.Clear();
-            string source = fctb.Text, temp = "";
-            bool commentFlag = false;
-            bool charr = false;
-            foreach (char c in source)
+            temp = "";
+            string source = fctb.Text;
+            char c;
+            bool stringFlag = false, commentFlag = false, charFlag = false;
+
+            for (int i = 0; i < source.Length; i++)
             {
-                //MessageBox.Show(((int)c).ToString());
-                if (charr && temp.Length >= 4)
-                {
-                    addTokenToList(temp);
-                    temp = "";
-                    charr = false;
-                }
-                if (c!='/' && temp!="" && temp.Last() == '/')
-                {
-                    addTokenToList(temp);
-                    temp = "";
-                    commentFlag = false;
-                }  
-                if (c == 13)
-                {
-                    if (temp != "")
-                    {
-                        addTokenToList(temp);
-                        temp = "";
-                    }
-                    wordNumber = 1;
-                    commentFlag = false;
-                }
-                else if (c==10)
+            start:;
+                index = i;
+                c = source.ElementAt(i);
+                if (c == 10)
                 {
                     lineNumber++;
-                    index = 0;
-                    wordNumber = 1;
                 }
-                else if (commentFlag)
-                {
-                    continue;
-                }
-                else if (c == 32)
+                if (c == 32 && !stringFlag)
                 {
                     if (temp != "")
                     {
-                        //temp not starting with "
-                        if (!regexCheck(temp, 6))
-                        {
-                            addTokenToList(temp);
-                            temp = "";
-                        }
-                        else
-                        {
-                            temp += c;
-                        }
-                    }
-                }
-                else if (c == '\'' || charr)
-                {
-                   if(temp!="" && regexCheck(temp, 11))
-                    {
-                        if (c != '\'')
-                        {
-                            temp += c;
-                        }else
-                        {
-                            temp += c;
-                            addTokenToList(temp);
-                            temp = "";
-                            charr = false;
-                        }
-                    }
-                   else if (temp == ""){
-                        temp += c;
-                        charr = true;
-                    }
-                }
-                // c alphabet
-                else if (regexCheck(c,8))
-                {
-                    if (temp == "")
-                        temp += c;
-                    // temp .
-                    else if (regexCheck(temp, 5) || regexCheck(temp, 9))
-                    {
                         addTokenToList(temp);
-                        temp = c.ToString();
                     }
-                    //temp alphanumeric or .numalpha
-                    else if (regexCheck(temp, 1) || regexCheck(temp, 7))
+                    continue;
+                }
+                if (c == 13 || c == 10)
+                {
+                    if (!commentFlag && !stringFlag)
                     {
-                        if (temp.Last() == '.')
+                        if (temp != "")
                         {
                             addTokenToList(temp);
-                            temp = c.ToString();
                         }
-                        else
+                        continue;
+                    }
+                }
+                //comments
+                if (!stringFlag)
+                {
+                    if (c == '/')
+                    {
+                        if (source.Length != (i + 1))
+                        {
+                            testString = c.ToString() + source.ElementAt(i + 1);
+                            if (testString == "//")
+                            {
+                                if (temp != "")
+                                {
+                                    addTokenToList(temp);
+                                }
+                                commentFlag = true;
+                                while (commentFlag)
+                                {
+                                    if (c == 10 || (i + 1) == source.Length)
+                                    {
+                                        commentFlag = false;
+                                        i++;
+                                        if (c == 10)
+                                        {
+                                            lineNumber++;
+                                            goto start;
+                                        }
+                                        continue;
+                                    }
+                                    i++;
+                                    c = source.ElementAt(i);
+                                }
+                            }
+                            else if (testString == "/*")
+                            {
+                                if (temp != "")
+                                {
+                                    addTokenToList(temp);
+                                }
+                                commentFlag = true;
+                                while (commentFlag)
+                                {
+                                    if ((i + 1) == source.Length)
+                                    {
+                                        commentFlag = false;
+                                        continue;
+                                    }
+                                    testString = c.ToString() + source.ElementAt(i + 1);
+                                    if (testString == "*/")
+                                    {
+                                        commentFlag = false;
+                                        i = i + 2;
+                                        if (i < source.Length)
+                                        {
+                                            c = source.ElementAt(i);
+                                        }
+                                        continue;
+                                    }
+                                    i++;
+                                    c = source.ElementAt(i);
+                                    if (c == 10)
+                                    {
+                                        lineNumber++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                //temp is empty
+                if (temp == "")
+                {
+                    //char is a limited punctuator ;,(){}
+                    if (regexCheck(c, 3))
+                    {
+                        addTokenToList(c);
+                    }
+                    //compound check
+                    else if (regexCheck(c, 6))
+                    {
+                        if (source.Length != (i + 1))
+                        {
+                            testString = c.ToString() + source.ElementAt(i + 1);
+                            if (compoundCheck(testString))
+                            {
+                                i++;
+                                addTokenToList(testString);
+                            }
+                            else
+                            {
+                                //+- check
+                                if (regexCheck(c, 5))
+                                {
+                                    temp += c;
+                                }
+                                else
+                                {
+                                    addTokenToList(c);
+                                }
+                            }
+                        }
+                        else if (c != 10 || c != 13)
+                        {
                             temp += c;
+                        }
                     }
-                    //temp starts with "
-                    else if (regexCheck(temp, 6))
+                    //anything else
+                    else
                     {
-                        temp += c;
-                    }
-                }
-                //c numeric
-                else if (regexCheck(c, 2))
-                {
-                    //temp alphanumeric or .numalpha
-                    if (regexCheck(temp, 1) || regexCheck(temp, 7) || regexCheck(temp, 9))
-                    {
-                        temp += c;
-                    }
-                    //temp starts with "
-                    else if (regexCheck(temp, 6))
-                    {
-                        temp += c;
-                    }
-                }
-                //c punctuator
-                else if (regexCheck(c,3))
-                {
-                    //temp not starting with "
-                    if (!regexCheck(temp, 6))
-                    {
-                        if (temp == "" && c == '/')
+                        if (c == '"')
                         {
-                            temp = c.ToString();
-                        }else
-                        if (c=='/' && temp!="" && temp.Last() != '/')
+                            stringFlag = true;
+                        }
+                        else if (c == '\'')
+                        {
+                            charFlag = true;
+                        }
+                        temp += c;
+                        if (charFlag)
+                        {
+                            int j = 2;
+                            if (source.ElementAt(i + 1) == '\\')
+                            {
+                                j++;
+                            }
+                            while (j > 0)
+                            {
+                                i++;
+                                temp += source.ElementAt(i);
+                                j--;
+                            }
+                            addTokenToList(temp);
+                            charFlag = false;
+                            continue;
+                        }
+                    }
+                }
+                //temp is not empty
+                else
+                {
+                    //string
+                    if (stringFlag)
+                    {
+                        if (c == 13)
+                        {
+                            stringFlag = false;
+                            addTokenToList(temp);
+                            continue;
+                        }
+                        temp += c;
+                        if (c == '"')
+                        {
+                            if (source.ElementAt(i - 1) != '\\')
+                            {
+                                stringFlag = false;
+                                addTokenToList(temp);
+                            }
+                        }
+                    }
+                    //char is an alphabet
+                    else if (regexCheck(c, 1))
+                    {
+                        //if temp is a .
+                        if (temp == "." || regexCheck(temp, 5))
                         {
                             addTokenToList(temp);
-                            temp = c.ToString();
                         }
-                        else if (temp != "" && temp.Last() == '/')
+                        temp += c;
+                    }
+                    //char is a number
+                    else if (regexCheck(c, 2))
+                    {
+                        temp += c;
+                    }
+                    //if char is a punctuator
+                    else
+                    {
+                        if (c == '.')
                         {
-                            temp = "";
-                            commentFlag = true;
-                        }
-                        //c is a .
-                        else  if (c == '.')
-                        {
-                            //temp is numeric
-                            if (regexCheck(temp, 2))
+                            //if temp is only numbers
+                            if (regexCheck(temp, 5))
                             {
                                 temp += c;
                             }
-                            //temp is alphanumeric or .numalpha
-                            else if (regexCheck(temp, 1) || regexCheck(temp, 7))
+                            //anything except numbers
+                            else
                             {
                                 addTokenToList(temp);
-                                temp = c.ToString();
+                                temp += c;
                             }
                         }
                         else if (c == '"')
                         {
-                            if (temp != "")
-                                addTokenToList(temp);
-                            temp = "";
-                            temp += c;
-                        }
-                        else if (temp == "" && c != '=')
-                        {
-                            if (regexCheck(c, 9))
-                                temp += c;
-                            else
-                                addTokenToList(c.ToString());
-                        }
-                        //checking if c is + || - for 
-                        else if (regexCheck(c, 9) )
-                        {
-                            if (temp != "" && !regexCheck(temp, 9))
-                            {
-                                addTokenToList(temp);
-                                temp = c.ToString();
-                            } else if (!regexCheck(temp, 9))
+                            //temp is a string
+                            if (stringFlag)
                             {
                                 temp += c;
-                            }
-                            //check if same ++ || -- || += || +-
-                            else if (temp == c.ToString())
-                            {
-                                temp += c;
-                                addTokenToList(temp);
-                                temp = "";
+                                if (source.ElementAt(i - 1) != '\\')
+                                {
+                                    stringFlag = false;
+                                    addTokenToList(temp);
+                                }
                             }
                             else
                             {
                                 addTokenToList(temp);
-                                //addTokenToList(c.ToString());
-                                temp = c.ToString();
+                                temp += c;
+                                stringFlag = true;
                             }
                         }
-                        //check if *=
-                        else if (c=='=')
-                        {
-                            if(regexCheck(temp, 10))
-                            {
-                                temp += c;
-                                addTokenToList(temp);
-                                temp = "";
-                            }
-                            else if (temp != "=")
-                            {
-                                addTokenToList(temp);
-                                temp = c.ToString();
-                            }
-                            else
-                            {
-                                temp += c;
-                                addTokenToList(temp);
-                                temp = "";
-                            }
-                        }
-                        
-                        else
+                        //limited punctuator
+                        else if (regexCheck(c, 3))
                         {
                             addTokenToList(temp);
-                            addTokenToList(c.ToString());
-                            temp = "";
+                            addTokenToList(c);
                         }
-                    }
-                    //c is a "
-                    else if (c == '"')
-                    {
-                        //check if temp is not empty
-                        if (temp != "")
+                        //compund op
+                        else if (regexCheck(c, 6))
                         {
-                            if (temp.Last() != '\\')
+                            addTokenToList(temp);
+                            if (source.Length != (i + 1))
                             {
-                                temp += c;
-                                addTokenToList(temp);
-                                temp = "";
+                                testString = c.ToString() + source.ElementAt(i + 1);
+                                if (compoundCheck(testString))
+                                {
+                                    i++;
+                                    addTokenToList(testString);
+                                }
+                                else
+                                {
+                                    //+- check
+                                    if (regexCheck(c, 5))
+                                    {
+                                        temp += c;
+                                    }
+                                    else
+                                    {
+                                        addTokenToList(c);
+                                    }
+                                }
                             }
                             else
                             {
                                 temp += c;
                             }
                         }
-                    }
-
-                    else
-                    {
-                        temp += c;
+                        else if (regexCheck(temp, 4))
+                        {
+                            addTokenToList(temp);
+                            temp += c;
+                        }
+                        else
+                        {
+                            temp += c;
+                        }
                     }
                 }
-                index++;
             }
-            addTokenToList(temp);
-            string hh = "";
-            foreach(Token t in StaticComponents.tokenSet)
-                hh+=t.ToString()+"\n";
+            if (temp != "")
+            {
+                addTokenToList(temp);
+            }
+
+            string hh = "Break Keywords\n\r";
+            foreach (Token t in StaticComponents.tokenSet)
+                hh += t.ToString() + "\n";
             MessageBox.Show(hh);
             Classifier classify = new Classifier();
             classify.classifier();
             //MessageBox.Show(classify.test());
-            hh = "";
+            hh = "Classifier \n\r";
             foreach (Token t in StaticComponents.tokenSet)
                 hh += t.ToString() + "\n";
             MessageBox.Show(hh);
-            StreamWriter sw = new StreamWriter("Token.txt");
-            sw.WriteLine(hh);
-            sw.Close();
         }
         public bool regexCheck(dynamic keyword, int type)
         {
             string regex = "";
             switch (type)
             {
-                //check if alphanumeric or _
+                //char is alphabet
                 case 1:
-                    regex = @"^[a-zA-Z0-9_]*$";
+                    regex = @"^[a-zA-Z]$";
                     break;
-                //string check if only numric
+                //string is numbers 0-9
                 case 2:
-                    regex = @"^[+-]?[0-9]+$";
+                    regex = @"^[0-9]+$";
                     break;
-                //char check if punctuator
+                //limited punctuators
                 case 3:
-                    regex = @"[^a-zA-Z0-9_]";
+                    regex = @"^[;,(){}]$";
                     break;
-                //check string if numeric decimal
+                //check string if float
                 case 4:
-                    regex = @"^[0-9]*[.]{1}[0-9]*$";
+                    regex = @"^[+-]?[0-9]*\.?[0-9]*$";
                     break;
-                //check if string = '.'
+                //+- at starting and then numbers
                 case 5:
-                    regex = @"^[.]{1}$";
+                    regex = @"^[+-][0-9]*$";
                     break;
-                //check string start with " can contain multiple \"
+                //compound ops <>!=+-*/%&|
                 case 6:
-                    regex = "^\"[^\"]*(\\\\\")*[^\"]*$";
-                    break;
-                //check string is .numalpha
-                case 7:
-                    regex = @"^[+-]?[0-9]*[.]?[a-zA-Z0-9_]*$";
-                    break;
-                // check string if only alphabets
-                case 8:
-                    regex = @"^[a-zA-Z]*$";
-                    break;
-                case 9:
-                    regex = "^[+-]$";
-                    break;
-                case 10:
-                    regex = "^[-+\\*\\/><]$";
-                    break;
-                case 11:
-                    regex = "^'\\\\?[^`]?$";
-                    break;
-                case 12:
-                    regex = "\'$";
+                    regex = @"^[<>!=\-+*/%&|]$";
                     break;
                 default:
                     break;
             }
+            //MessageBox.Show(regexCheck(keyword.ToString(), regex).ToString() + "Character: " + keyword);
+            //MessageBox.Show(regex);
             return regexCheck(keyword.ToString(), regex);
         }
 
@@ -386,6 +418,12 @@ namespace LexicalAnalyzer
             StaticComponents.tokenSet.Add(new Token("", value.ToString(), index, wordNumber, lineNumber));
             StaticComponents.tokenSet.Last().index -= StaticComponents.tokenSet.Last().value.Length;
             wordNumber++;
+            temp = "";
+        }
+
+        public bool compoundCheck(string s)
+        {
+            return StaticComponents.compoundOperators.Any(x => x == s);
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
