@@ -211,15 +211,18 @@ namespace LexicalAnalyzer
                         if (charFlag)
                         {
                             int j = 2;
-                            if (source.ElementAt(i + 1) == '\\')
+                            if ((i + 1) != source.Length)
                             {
-                                j++;
-                            }
-                            while (j > 0)
-                            {
-                                i++;
-                                temp += source.ElementAt(i);
-                                j--;
+                                if (source.ElementAt(i + 1) == '\\')
+                                {
+                                    j++;
+                                }
+                                while (j > 0)
+                                {
+                                    i++;
+                                    temp += source.ElementAt(i);
+                                    j--;
+                                }
                             }
                             addTokenToList(temp);
                             charFlag = false;
@@ -380,7 +383,7 @@ namespace LexicalAnalyzer
                     break;
                 //limited punctuators
                 case 3:
-                    regex = @"^[;,(){}]$";
+                    regex = @"^[;,(){}[\]]$";
                     break;
                 //check string if float
                 case 4:
@@ -388,7 +391,7 @@ namespace LexicalAnalyzer
                     break;
                 //+- at starting and then numbers
                 case 5:
-                    regex = @"^[+-][0-9]*$";
+                    regex = @"^[+-]?[0-9]*$";
                     break;
                 //compound ops <>!=+-*/%&|
                 case 6:
