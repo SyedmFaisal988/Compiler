@@ -9,7 +9,7 @@ namespace LexicalAnalyzer
     public class Token
     {
         public string classKeyword { get; set; }
-        public string value { get; set; }
+        public string value;
         public int index { get; set; }
         public int wordNumber { get; set; }
         public int lineNumber { get; set; }

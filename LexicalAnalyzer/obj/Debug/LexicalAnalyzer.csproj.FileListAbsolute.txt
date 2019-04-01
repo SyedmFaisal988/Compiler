@@ -30,3 +30,13 @@ C:\data\compilerconst\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.csprojResolveAss
 C:\data\compilerconst\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.Form1.resources
 C:\data\compilerconst\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.Properties.Resources.resources
 C:\data\compilerconst\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.csproj.GenerateResource.Cache
+C:\data\Compiler\LexicalAnalyzer\bin\Debug\LexicalAnalyzer.exe.config
+C:\data\Compiler\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.exe
+C:\data\Compiler\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.pdb
+C:\data\Compiler\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.csprojResolveAssemblyReference.cache
+C:\data\Compiler\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.Form1.resources
+C:\data\Compiler\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.Properties.Resources.resources
+C:\data\Compiler\LexicalAnalyzer\obj\Debug\LexicalAnalyzer.csproj.GenerateResource.Cache
+C:\data\Compiler\LexicalAnalyzer\bin\Debug\LexicalAnalyzer.exe
+C:\data\Compiler\LexicalAnalyzer\bin\Debug\LexicalAnalyzer.pdb
+C:\data\Compiler\LexicalAnalyzer\bin\Debug\FastColoredTextBox.xml

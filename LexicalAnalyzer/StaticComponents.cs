@@ -9,5 +9,6 @@ namespace LexicalAnalyzer
     public static class StaticComponents
     {
         public static List<Token> tokenSet = new List<Token>();
+        public static List<string> compoundOperators = new List<string>(new string[] { "<=", ">=", "!=", "==", "&&", "||", "-=", "+=", "*=", "/=", "%=", "++", "--" });
     }
 }
