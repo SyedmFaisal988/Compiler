@@ -6,18 +6,18 @@ SUBMITTED TO MRS MARYAM FEROZE
 ## Muhammad Asad
 ## Muhammad Danish
 # Contents
-1 Lexical Analyzer Specification. ................................................................................................................... 2
-1.1 Classification of Lexeme – Keywords. ................................................................................................. 2
-1.2 Classification of lexeme – Punctuator................................................................................................. 3
-1.3 Classification of lexeme – Operators. ................................................................................................. 3
-1.3.1 Arithmetic Operators. .................................................................................................................. 3
-1.3.2 Relational Operators.................................................................................................................... 3
-1.3.3 Logical Operators. ........................................................................................................................ 3
-1.3.4 Assignment Operators. ................................................................................................................ 3
-1.4 Classification of lexeme – Identifiers. ................................................................................................. 4
-1.4.1 Rules for Identifiers...................................................................................................................... 4
-1.4.2 Regular Expression for Identifiers................................................................................................ 4
-1.5 Classification of lexeme – Constants................................................................................................... 41 Lexical Analyzer Specification.
+1 Lexical Analyzer Specification.
+1.1 Classification of Lexeme – Keywords.
+1.2 Classification of lexeme - Punctuator
+1.3 Classification of lexeme – Operators.
+1.3.1 Arithmetic Operators. 
+1.3.2 Relational Operators.
+1.3.3 Logical Operators. 
+1.3.4 Assignment Operators. 
+1.4 Classification of lexeme – Identifiers. 
+1.4.1 Rules for Identifiers.
+1.4.2 Regular Expression for Identifiers.
+1.5 Classification of lexeme – Constants.
 # 1.1 Classification of Lexeme – Keywords.
 The Keywords that will used in our language are listed below along with the details of their
 functionality.
