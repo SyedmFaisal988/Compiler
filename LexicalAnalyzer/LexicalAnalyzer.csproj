@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classifier.cs" />
+    <Compile Include="First_N_Follow.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

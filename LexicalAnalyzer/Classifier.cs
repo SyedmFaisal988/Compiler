@@ -30,7 +30,8 @@ namespace LexicalAnalyzer
                 { "this", "this" },
                 { "extend", "extend" },
                 { "sealed", "sealed" },
-                { "base", "base" }
+                { "base", "base" },
+                { "abstract", "abstract"}
         };
         string[,] operators = {
             { "mdm", "*"},
