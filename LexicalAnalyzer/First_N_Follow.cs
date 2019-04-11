@@ -14,6 +14,7 @@ namespace LexicalAnalyzer
         public static string[] FollowAbstract = new string[] { "sealed", "class" };
         public static string[] FirstSealed = new string[] { "sealed", "null" };
         public static string[] FollowSealed = new string[] { "class" };
+        public static string[] FirstAss1 = new string[] { "new", "ID", "(" };
         public static string[] FirstExtend = new string[] { "extend", "null" };
         public static string[] FollowExtend = new string[] { "{" };
         public static string[] FirstClass_Body = new string[] { "{", "ter" };
@@ -40,13 +41,14 @@ namespace LexicalAnalyzer
         public static string[] FollowParams = new string[] { ")", "]" };
         public static string[] FirstCommas = new string[] { "," };
         public static string[] FollowCommas = new string[] { ")","]" };
-        public static string[] FirstArrayInit = new string[] { "ID" };
+        public static string[] FirstArrayInit = new string[] { "ID", "[" };
         public static string[] FollowArrayInit = new string[] { "" };
         public static string[] FirstInit = new string[] { "int_const", "float_const", "string_const", "char_const", "null" };
         public static string[] FollowInit = new string[] { "ter", "," };
+        public static string[] FirstInit2 = new string[] { "int_const", "float_const", "string_const", "char_const", "ID" };
         public static string[] FirstList = new string[] { "ter", "," };
         public static string[] FollowList = new string[] { "" };
-        public static string[] FirstFunction_body = new string[] { "ter" };
+        public static string[] FirstFunction_body = new string[] { "ter", "{" };
         public static string[] FollowFunction_body = new string[] { "" };
         public static string[] FirstR1 = new string[] { "||", "&&", "PM", "RO", "MDM", "ROP", "ID", "int_const", "float_const", "string_const", "char_const", "(", "!", "inc", "dec", "null" };
         public static string[] FollowR1 = new string[] { "}" };
