@@ -345,7 +345,7 @@ namespace LexicalAnalyzer
                             if (tokenSet.ElementAt(0).classKeyword == "break")
                             {
                                 tokenSet.RemoveAt(0);
-                                if (tokenSet.ElementAt(0).classKeyword == "ter")){
+                                if (tokenSet.ElementAt(0).classKeyword == "ter"){
                                     tokenSet.RemoveAt(0);
                                 }
                             }
@@ -474,6 +474,239 @@ namespace LexicalAnalyzer
             }
             return status;
         }
+        bool AssignList()
+        {
+            bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == ".")
+            {
+                tokenSet.RemoveAt(0);
+                if (tokenSet.ElementAt(0).classKeyword == "ID")
+                {
+                    tokenSet.RemoveAt(0);
+                    if(tokenSet.ElementAt(0).classKeyword=="." || First_N_Follow.FollowAssignList.Contains(tokenSet.ElementAt(0).classKeyword))
+                    {
+                        status = AssignList();
+                    }
+                    else
+                    {
+                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        status = false;
+                    }
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            return status;
+        }
+        bool AssignCall2()
+        {
+            bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == "(")
+            {
+                tokenSet.RemoveAt(0);
+                if(First_N_Follow.FirstParams.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowParams.Contains(tokenSet.ElementAt(0).classKeyword))
+                {
+                    status = Params();
+                    if(tokenSet.ElementAt(0).classKeyword==")" && status)
+                    {
+                        tokenSet.RemoveAt(0);
+                        if (tokenSet.ElementAt(0).classKeyword == "ter")
+                        {
+                            tokenSet.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        status = false;
+                    }
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            else if(tokenSet.ElementAt(0).classKeyword=="assign" || tokenSet.ElementAt(0).classKeyword == "compAss")
+            {
+                tokenSet.RemoveAt(0);
+                if (First_N_Follow.FirstCall.Contains(tokenSet.ElementAt(0).classKeyword))
+                {
+                    status = Call();
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            else
+            {
+                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                status = false;
+            }
+            return status;
+        }
+        bool Call1()
+        {
+            bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == "(")
+            {
+                tokenSet.RemoveAt(0);
+                if (First_N_Follow.FirstParams.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowParams.Contains(tokenSet.ElementAt(0).classKeyword))
+                {
+                    status = Params();
+                    if (tokenSet.ElementAt(0).classKeyword == ")" && status)
+                    {
+                        tokenSet.RemoveAt(0);
+                        if (tokenSet.ElementAt(0).classKeyword == "ter")
+                        {
+                            tokenSet.RemoveAt(0);
+                        }
+                        else
+                        {
+                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            status = false;
+                        }
+                    }
+                    else
+                    {
+                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        status = false;
+                    }
+                }
+                else if(First_N_Follow.FirstInitList.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
+                {
+                    status = InitList();
+                    if(First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword) && status)
+                    {
+                        status = Exp();
+                        if(tokenSet.ElementAt(0).classKeyword=="ter" && status)
+                        {
+                            tokenSet.RemoveAt(0);
+                        }
+                        else
+                        {
+                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            status = false;
+                        }
+                    }
+                    else
+                    {
+                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        status = false;
+                    }
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            return status;
+        }
+        bool InitList()
+        {
+            bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == "assign")
+            {
+                tokenSet.RemoveAt(0);
+                if (tokenSet.ElementAt(0).classKeyword == "ID")
+                {
+                    tokenSet.RemoveAt(0);
+                    if(First_N_Follow.FirstInitList.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
+                    {
+                        status = InitList();
+                    }
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            return status;
+        }
+        bool Call()
+        {
+            bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == "ID")
+            {
+                tokenSet.RemoveAt(0);
+                if(First_N_Follow.FollowAssignList.Contains(tokenSet.ElementAt(0).classKeyword) || tokenSet.ElementAt(0).classKeyword == ".")
+                {
+                    status = AssignList();
+                    if(First_N_Follow.FirstCall1.Contains(tokenSet.ElementAt(0).classKeyword) && status)
+                    {
+                        status = Call1();
+                    }
+                    else
+                    {
+                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        status = false;
+                    }
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            else if (First_N_Follow.FirstConst.Contains(tokenSet.ElementAt(0).classKeyword))
+            {
+                tokenSet.RemoveAt(0);
+                if (tokenSet.ElementAt(0).classKeyword == "ter")
+                {
+                    tokenSet.RemoveAt(0);
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            else
+            {
+                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                status = false;
+            }
+            return true;
+        }
+        bool AssignCall()
+        {
+            bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == "ID")
+            {
+                tokenSet.RemoveAt(0);
+                if(tokenSet.ElementAt(0).classKeyword=="." || First_N_Follow.FollowAssignList.Contains(tokenSet.ElementAt(0).classKeyword))
+                {
+                    status = AssignList();
+                    if (First_N_Follow.FollowAssignList.Contains(tokenSet.ElementAt(0).classKeyword))
+                    {
+                        status = AssignCall2()
+                    }
+                    else
+                    {
+                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        status = false;
+                    }
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            else
+            {
+                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                status = false;
+            }
+            return status;
+        }
         bool List3()
         {
             bool status = true;
@@ -514,7 +747,7 @@ namespace LexicalAnalyzer
                             if (First_N_Follow.FirstBody.Contains(tokenSet.ElementAt(0).classKeyword))
                             {
                                 status = Body();
-                                if((tokenSet.ElementAt(0).classKeyword=="else" || First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword ) && status){
+                                if((tokenSet.ElementAt(0).classKeyword=="else" || First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword ) && status)){
                                     status = List3();
                                 }
                                 else

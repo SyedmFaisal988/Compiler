@@ -57,11 +57,15 @@ namespace LexicalAnalyzer
         public static string[] FirstConst = new string[] { "int_const", "float_const", "string_const", "char_const" };
         public static string[] FirstCond3_1 = new string[] { "assign", "compAss" };
         public static string[] FollowCond3_1 = new string[] { ")" };
+        public static string[] FollowAssignList = new string[] { "(", "assign", "compAss" };
+        public static string[] FirstInitList = new string[] { "assign" };
+        public static string[] FirstCall1 = new string[] { "(", "assign", "compAss" };
         public static string[] FirstInt_const = new string[] { "int_const" };
         public static string[] FirstSwitchBody = new string[] { "case", "default" };
         public static string[] Firstfloat_const = new string[] { "float_const" };
         public static string[] FirstString_const = new string[] { "string_const" };
         public static string[] FirstChar_const = new string[] { "char_const" };
+        public static string[] FirstCall = new string[] { "ID", "(", "int_const", "float_const", "string_const", "char_const" };
         public static string[] FirstAM = new string[] { "public", "private", "null" };
         public static string[] FollowAM = new string[] { "DT","ID", "abstract" };
         public static string[] FirstBody = new string[] { "ter", "for", "while","do","if", "switch", "public", "private", "DT", "ID", "abstract", "return", "break", "continue", "ID", "{"  };
