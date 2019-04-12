@@ -58,6 +58,7 @@ namespace LexicalAnalyzer
         public static string[] FirstCond3_1 = new string[] { "assign", "compAss" };
         public static string[] FollowCond3_1 = new string[] { ")" };
         public static string[] FirstInt_const = new string[] { "int_const" };
+        public static string[] FirstSwitchBody = new string[] { "case", "default" };
         public static string[] Firstfloat_const = new string[] { "float_const" };
         public static string[] FirstString_const = new string[] { "string_const" };
         public static string[] FirstChar_const = new string[] { "char_const" };
