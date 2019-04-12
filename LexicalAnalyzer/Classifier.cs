@@ -14,7 +14,10 @@ namespace LexicalAnalyzer
                 { "dt", "string" },
                 { "dt", "char" },
                 { "constant", "constant" },
-                { "loop", "loop" },
+                { "for", "for" },
+                { "while", "while" },
+                { "do", "while" },
+
                 { "if", "if" },
                 { "else", "else" },
                 { "switch", "switch"},

@@ -40,6 +40,7 @@ namespace LexicalAnalyzer
         public static string[] FirstParams = new string[] { "||", "&&","PM","RO","MDM","ROP", "ID", "int_const", "float_const", "string_const", "char_const", "(", "!", "inc","dec", "null" };
         public static string[] FollowParams = new string[] { ")", "]" };
         public static string[] FirstCommas = new string[] { "," };
+        public static string[] FirstCond3 = new string[] { "ID", "inc", "dec" };
         public static string[] FollowCommas = new string[] { ")","]" };
         public static string[] FirstArrayInit = new string[] { "ID", "[" };
         public static string[] FollowArrayInit = new string[] { "" };
@@ -50,9 +51,12 @@ namespace LexicalAnalyzer
         public static string[] FollowList = new string[] { "" };
         public static string[] FirstFunction_body = new string[] { "ter", "{" };
         public static string[] FollowFunction_body = new string[] { "" };
+        public static string[] FirstLoop_Str = new string[] { "for", "while", "do" };
         public static string[] FirstR1 = new string[] { "||", "&&", "PM", "RO", "MDM", "ROP", "ID", "int_const", "float_const", "string_const", "char_const", "(", "!", "inc", "dec", "null" };
         public static string[] FollowR1 = new string[] { "}" };
-        public static string[] FirstConst = new string[] { "int_const", "float_const", "string_const", "char_const", "null" };
+        public static string[] FirstConst = new string[] { "int_const", "float_const", "string_const", "char_const" };
+        public static string[] FirstCond3_1 = new string[] { "assign", "compAss" };
+        public static string[] FollowCond3_1 = new string[] { ")" };
         public static string[] FirstInt_const = new string[] { "int_const" };
         public static string[] Firstfloat_const = new string[] { "float_const" };
         public static string[] FirstString_const = new string[] { "string_const" };

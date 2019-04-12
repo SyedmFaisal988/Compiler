@@ -197,6 +197,311 @@ namespace LexicalAnalyzer
             }
             return status;
         }
+        bool Const()
+        {
+            bool status = true;
+            if(First_N_Follow.FirstConst.Contains(tokenSet.ElementAt(0).classKeyword))
+            {
+                tokenSet.RemoveAt(0);
+            }
+            else
+            {
+                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                status = false;
+            }
+            return status;
+        }
+        bool Loop_Str()
+        {
+            bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == "for")
+            {
+                status = ForLoop();
+            }
+            else if (tokenSet.ElementAt(0).classKeyword == "while")
+            {
+                status = WhileLoop();
+            }
+            else if (tokenSet.ElementAt(0).classKeyword == "do")
+            {
+                status = DoWhileLoop();
+            }
+            else
+            {
+                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                status = false;
+            }
+            if (!status)
+            {
+                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                status = false;
+            }
+            return status;
+        }
+        bool Cond3()
+        {
+            bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == "ID")
+            {
+                tokenSet.RemoveAt(0);
+                if(First_N_Follow.FirstCond3_1.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowCond3_1.Contains(tokenSet.ElementAt(0).classKeyword))
+                {
+                    status = Cond3_1;
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            else if (tokenSet.ElementAt(0).classKeyword == "inc")
+            {
+                tokenSet.RemoveAt(0);
+            }
+            else if (tokenSet.ElementAt(0).classKeyword == "dec")
+            {
+                tokenSet.RemoveAt(0);
+            }
+            else
+            {
+                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                status = false;
+            }
+            return status;
+        }
+        bool Body()
+        {
+            bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == "ter")
+            {
+                tokenSet.RemoveAt(0);
+            }
+            else if (First_N_Follow.FirstSST.Contains(tokenSet.ElementAt(0).classKeyword))
+            {
+                status = SST();
+            }
+            else if(tokenSet.ElementAt(0).classKeyword == "{")
+            {
+                tokenSet.RemoveAt(0);
+                if (First_N_Follow.FirstMST.Contains(tokenSet.ElementAt(0).classKeyword))
+                {
+                    status = MST();
+                    if (tokenSet.ElementAt(0).classKeyword == "}" && status)
+                    {
+                        tokenSet.RemoveAt(0);
+                    }
+                    else
+                    {
+                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        status = false;
+                    }
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            else
+            {
+                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                status = false;
+            }
+            return status;
+        }
+        bool DoWhileLoop()
+        {
+            bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == "do")
+            {
+                if (First_N_Follow.FirstBody.Contains(tokenSet.ElementAt(0).classKeyword))
+                {
+                    status = Body();
+                    if(tokenSet.ElementAt(0).classKeyword=="while" && status)
+                    {
+                        tokenSet.RemoveAt(0);
+                        if (tokenSet.ElementAt(0).classKeyword=="(")
+                        {
+                            tokenSet.RemoveAt(0);
+                            if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
+                            {
+                                status = Exp();
+                                if(tokenSet.ElementAt(0).classKeyword==")" && status)
+                                {
+                                    tokenSet.RemoveAt(0);
+                                    if (tokenSet.ElementAt(0).classKeyword == "ter")
+                                    {
+                                        tokenSet.RemoveAt(0);
+                                    }
+                                }
+                                else
+                                {
+                                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                    status = false;
+                                }
+                            }
+                            else
+                            {
+                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                status = false;
+                            }
+                        }
+                        else
+                        {
+                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            status = false;
+                        }
+                    }
+                    else
+                    {
+                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        status = false;
+                    }
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            else
+            {
+                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                status = false;
+            }
+            return status;
+        }
+        bool WhileLoop()
+        {
+            bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == "while")
+            {
+                tokenSet.RemoveAt(0);
+                if (tokenSet.ElementAt(0).classKeyword == "(")
+                {
+                    tokenSet.RemoveAt(0);
+                    if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
+                    {
+                        status = Exp();
+                        if(tokenSet.ElementAt(0).classKeyword==")" && status)
+                        {
+                            tokenSet.RemoveAt(0);
+                            if (First_N_Follow.FirstBody.Contains(tokenSet.ElementAt(0).classKeyword))
+                            {
+                                status = Body();
+                            }
+                        }
+                        else
+                        {
+                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            status = false;
+                        }
+                    }
+                    else
+                    {
+                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        status = false;
+                    }
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            else
+            {
+                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                status = false;
+            }
+            return status;
+        }
+        bool ForLoop()
+        {
+            bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == "for")
+            {
+                tokenSet.RemoveAt(0);
+                if (tokenSet.ElementAt(0).classKeyword == "(")
+                {
+                    tokenSet.RemoveAt(0);
+                    if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
+                    {
+                        status = Exp();
+                        if(tokenSet.ElementAt(0).classKeyword=="ter" && status)
+                        {
+                            tokenSet.RemoveAt(0);
+                            if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
+                            {
+                                status = Exp();
+                                if(tokenSet.ElementAt(0).classKeyword=="ter" && status)
+                                {
+                                    tokenSet.RemoveAt(0);
+                                    if (First_N_Follow.FirstCond3.Contains(tokenSet.ElementAt(0).classKeyword))
+                                    {
+                                        status = Cond3();
+                                        if(tokenSet.ElementAt(0).classKeyword==")" && status)
+                                        {
+                                            tokenSet.RemoveAt(0);
+                                            if (First_N_Follow.FirstBody.Contains(tokenSet.ElementAt(0).classKeyword))
+                                            {
+                                                status = Body();
+                                            }
+                                            else
+                                            {
+                                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                                status = false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                            status = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                        status = false;
+                                    }
+                                }
+                                else
+                                {
+                                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                    status = false;
+                                }
+                            }
+                            else
+                            {
+                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                status = false;
+                            }
+                        }
+                        else
+                        {
+                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            status = false;
+                        }
+                    }
+                    else
+                    {
+                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        status = false;
+                    }
+                }
+                else
+                {
+                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+            }
+            else
+            {
+                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                status = false;
+            }
+            return status;
+        }
         bool Decl2()
         {
             bool status = true;
