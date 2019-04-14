@@ -9,16 +9,17 @@ namespace LexicalAnalyzer
     class ParseTree
     {
         private List<Token> tokenSet = new List<Token>(StaticComponents.tokenSet.Count);
-        private List<int> errorLine = new List<int>();
+        private List<ParseError> errorLine = new List<ParseError>();
         public ParseTree()
         {
             StaticComponents.tokenSet.ForEach((item) => {
                 tokenSet.Add(item);
             });
         }
-        public bool Parse()
+        public List<ParseError> Parse()
         {
-            return S();
+            S();
+            return errorLine; 
         }
         bool S()
         {
@@ -34,17 +35,19 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
+                    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
+                errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -74,29 +77,29 @@ namespace LexicalAnalyzer
                             {
                                 status = Class_Re();
                                 if (!status)
-                                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             }
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         }
                     }
                     else
                     {
                         status = false;
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -108,7 +111,7 @@ namespace LexicalAnalyzer
             {
                 status = Class_str();
                 if (!status)
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
             }
             return status;
         }
@@ -136,13 +139,13 @@ namespace LexicalAnalyzer
                     status = Init();
                     if (!status)
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -179,20 +182,20 @@ namespace LexicalAnalyzer
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -206,7 +209,7 @@ namespace LexicalAnalyzer
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -228,12 +231,12 @@ namespace LexicalAnalyzer
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             if (!status)
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -250,7 +253,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -268,7 +271,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -282,7 +285,7 @@ namespace LexicalAnalyzer
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -322,25 +325,25 @@ namespace LexicalAnalyzer
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -369,31 +372,31 @@ namespace LexicalAnalyzer
                             }
                             else
                             {
-                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                 status = false;
                             }
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -418,7 +421,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -451,43 +454,43 @@ namespace LexicalAnalyzer
                                     }
                                     else
                                     {
-                                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                         status = false;
                                     }
                                 }
                                 else
                                 {
-                                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                     status = false;
                                 }
                             }
                             else
                             {
-                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                 status = false;
                             }
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -507,13 +510,13 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -538,13 +541,13 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -557,13 +560,13 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -586,13 +589,13 @@ namespace LexicalAnalyzer
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
@@ -608,19 +611,19 @@ namespace LexicalAnalyzer
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -642,7 +645,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -663,13 +666,13 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -682,13 +685,13 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return true;
@@ -708,19 +711,19 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -741,7 +744,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -770,37 +773,37 @@ namespace LexicalAnalyzer
                                 }
                                 else
                                 {
-                                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                     status = false;
                                 }
                             }
                             else
                             {
-                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                 status = false;
                             }
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -828,19 +831,19 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -872,37 +875,37 @@ namespace LexicalAnalyzer
                                 }
                                 else
                                 {
-                                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                     status = false;
                                 }
                             }
                             else
                             {
-                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                 status = false;
                             }
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -929,25 +932,25 @@ namespace LexicalAnalyzer
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -985,55 +988,55 @@ namespace LexicalAnalyzer
                                             }
                                             else
                                             {
-                                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                                 status = false;
                                             }
                                         }
                                         else
                                         {
-                                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                             status = false;
                                         }
                                     }
                                     else
                                     {
-                                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                         status = false;
                                     }
                                 }
                                 else
                                 {
-                                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                     status = false;
                                 }
                             }
                             else
                             {
-                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                 status = false;
                             }
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1066,7 +1069,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1084,7 +1087,7 @@ namespace LexicalAnalyzer
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1117,19 +1120,19 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1148,19 +1151,19 @@ namespace LexicalAnalyzer
                         status = List();
                         if (!status)
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1185,36 +1188,36 @@ namespace LexicalAnalyzer
                                 }
                                 else
                                 {
-                                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                     status = false;
                                 }
                             }
                             else
                             {
-                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                 status = false;
                             }
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1230,13 +1233,13 @@ namespace LexicalAnalyzer
                     status = Params();
                     if (!status)
                     {
-                       errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                       errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                        status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1254,7 +1257,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1273,7 +1276,7 @@ namespace LexicalAnalyzer
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1293,13 +1296,13 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1309,7 +1312,7 @@ namespace LexicalAnalyzer
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1327,7 +1330,7 @@ namespace LexicalAnalyzer
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1347,13 +1350,13 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1363,7 +1366,7 @@ namespace LexicalAnalyzer
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1383,13 +1386,13 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1408,13 +1411,13 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1431,13 +1434,13 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1458,7 +1461,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1476,7 +1479,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1497,13 +1500,13 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1521,7 +1524,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1541,13 +1544,13 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1560,7 +1563,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1573,13 +1576,13 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1603,13 +1606,13 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1625,13 +1628,13 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1649,7 +1652,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1659,7 +1662,7 @@ namespace LexicalAnalyzer
             }   
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1689,19 +1692,19 @@ namespace LexicalAnalyzer
                             }
                             else
                             {
-                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                 status = false;
                             }
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
@@ -1719,14 +1722,14 @@ namespace LexicalAnalyzer
                     status = Ass1();
                     if (!status)
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1743,7 +1746,7 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1761,26 +1764,26 @@ namespace LexicalAnalyzer
                             status = FunctionBody();
                             if (!status)
                             {
-                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                 status = false;
                             }
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1804,19 +1807,19 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1848,43 +1851,43 @@ namespace LexicalAnalyzer
                                     }
                                     else
                                     {
-                                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                         status = false;
                                     }
                                 }
                                 else
                                 {
-                                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                     status = false;
                                 }
                             }
                             else
                             {
-                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                 status = false;
                             }
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -1903,13 +1906,13 @@ namespace LexicalAnalyzer
                         status = Ass();
                         if (!status)
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
@@ -1918,13 +1921,13 @@ namespace LexicalAnalyzer
                     status = Decl5();
                     if (!status)
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -1951,43 +1954,43 @@ namespace LexicalAnalyzer
                                         status = FunctionBody();
                                         if (!status)
                                         {
-                                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                             status = false;
                                         }
                                     }
                                     else
                                     {
-                                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                         status = false;
                                     }
                                 }
                                 else
                                 {
-                                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                     status = false;
                                 }
                             }
                             else
                             {
-                                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                 status = false;
                             }
                         }
                         else
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
@@ -2001,25 +2004,25 @@ namespace LexicalAnalyzer
                         status = Ass();
                         if (!status)
                         {
-                            errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -2036,13 +2039,13 @@ namespace LexicalAnalyzer
                 }
                 else
                 {
-                    errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
             return status;
@@ -2057,7 +2060,7 @@ namespace LexicalAnalyzer
                 {
                     status = Class_Body1();
                     if (!status)
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 }
             }
             return status;
@@ -2091,7 +2094,7 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(tokenSet.ElementAt(0).lineNumber);
+                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     }
                 }
                 else

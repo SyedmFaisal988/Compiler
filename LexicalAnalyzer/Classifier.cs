@@ -17,7 +17,7 @@ namespace LexicalAnalyzer
                 { "for", "for" },
                 { "while", "while" },
                 { "do", "while" },
-                {"class", "class" },
+                { "class", "class" },
                 { "if", "if" },
                 { "else", "else" },
                 { "switch", "switch"},

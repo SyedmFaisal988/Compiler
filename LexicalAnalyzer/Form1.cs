@@ -366,12 +366,16 @@ namespace LexicalAnalyzer
             {
                 addTokenToList(temp);
             }
-
+            StartCompile();
+            
+        }
+        private void StartCompile()
+        {
             string hh = "Break Keywords\n\r";
             addTokenToList("$");
             foreach (Token t in StaticComponents.tokenSet)
                 hh += t.ToString() + "\n";
-            MessageBox.Show(hh);
+           // MessageBox.Show(hh);
             Classifier classify = new Classifier();
             classify.classifier();
             //MessageBox.Show(classify.test());
@@ -383,6 +387,15 @@ namespace LexicalAnalyzer
                 sw.WriteLine(t.ToString());
             sw.Close();
             MessageBox.Show(hh);
+            ParseTree PT = new ParseTree();
+            List<ParseError> ParseError = PT.Parse();
+            string err = "";
+            foreach( ParseError error in ParseError)
+            {
+                err += error.ToString() + "\n";
+            }
+            MessageBox.Show(err);
+
         }
         public bool regexCheck(dynamic keyword, int type)
         {
