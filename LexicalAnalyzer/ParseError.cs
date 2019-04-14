@@ -11,6 +11,7 @@ namespace LexicalAnalyzer
         public int lineNumber;
         public string ClassKeyword;
         public int word;
+
         public ParseError(int ln, string ck, int w)
         {
             lineNumber = ln;

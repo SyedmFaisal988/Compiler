@@ -25,7 +25,7 @@ namespace LexicalAnalyzer
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openFileDialog1.InitialDirectory = @"C:\";
+            openFileDialog1.InitialDirectory = @"C:\Users\DevOps\Desktop\";
             openFileDialog1.RestoreDirectory = true;
             openFileDialog1.Title = "Browse Source Files";
             openFileDialog1.DefaultExt = "txt";
@@ -47,6 +47,10 @@ namespace LexicalAnalyzer
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (fctb.Text == "")
+            {
+                fctb.Text = System.IO.File.ReadAllText(@"C:\Users\DevOps\Desktop\Compiler.txt");
+            }
             breakKeywords();
         }
 

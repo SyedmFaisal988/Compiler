@@ -9,10 +9,10 @@ namespace LexicalAnalyzer
     class Classifier
     {
         string[,] keywords = {
-                { "dt", "int" },
-                { "dt", "float" },
-                { "dt", "string" },
-                { "dt", "char" },
+                { "DT", "int" },
+                { "DT", "float" },
+                { "DT", "string" },
+                { "DT", "char" },
                 { "constant", "constant" },
                 { "for", "for" },
                 { "while", "while" },
@@ -25,8 +25,8 @@ namespace LexicalAnalyzer
                 { "break", "break" },
                 { "continue", "continue" },
                 { "return", "return" },
-                { "void", "void" },
-                { "main", "main" },
+              //  { "void", "void" },
+              //  { "main", "main" },
                 { "AM", "private" },
                 { "AM", "public" },
                 { "new", "new" },
@@ -219,6 +219,9 @@ namespace LexicalAnalyzer
                     classPart = isOpr(tokenValue);
                     if (classPart == "")
                     {
+                        if (tokenValue == "$")
+                            classPart = "$";
+                        else
                         classPart = "invalid_token";
                     }
                 }
