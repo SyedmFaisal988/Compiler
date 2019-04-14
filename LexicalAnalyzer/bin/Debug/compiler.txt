@@ -1,9 +1,12 @@
 class hey extend hey{ 
-    string[1] h = [5,];
+    string[1] h = [4,];
     public void main(){
         string h = "hello";
-       hh hd = new hh();
-        hh();
+        for(t=0 ; t<1;i++){
+            int ad = b+c;
+        }
+       hh hd = new hh(ad);
+       hh(3+ 2,);
         return ;
     }
 }

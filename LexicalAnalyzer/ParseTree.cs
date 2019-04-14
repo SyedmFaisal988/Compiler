@@ -281,19 +281,28 @@ namespace LexicalAnalyzer
                 {
                     status = Cond3_1();
                 }
+                else if(tokenSet.ElementAt(0).classKeyword == "inc" || tokenSet.ElementAt(0).classKeyword == "dec")
+                {
+                    tokenSet.RemoveAt(0);
+                }
                 else
                 {
                     errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
-            else if (tokenSet.ElementAt(0).classKeyword == "inc")
+            else if (tokenSet.ElementAt(0).classKeyword == "inc" || tokenSet.ElementAt(0).classKeyword=="dec")
             {
                 tokenSet.RemoveAt(0);
-            }
-            else if (tokenSet.ElementAt(0).classKeyword == "dec")
-            {
-                tokenSet.RemoveAt(0);
+                if (tokenSet.ElementAt(0).classKeyword == "ID")
+                {
+                    tokenSet.RemoveAt(0);
+                }
+                else
+                {
+                    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                    status = false;
+                }
             }
             else
             {
@@ -1122,12 +1131,12 @@ namespace LexicalAnalyzer
                 if (tokenSet.ElementAt(0).classKeyword == "(")
                 {
                     tokenSet.RemoveAt(0);
-                    if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
+                    if (First_N_Follow.FirstAssignCall.Contains(tokenSet.ElementAt(0).classKeyword))
                     {
-                        status = Exp();
-                        if(tokenSet.ElementAt(0).classKeyword=="ter" && status)
-                        {
-                            tokenSet.RemoveAt(0);
+                        status = AssignCall();
+                        //if(tokenSet.ElementAt(0).classKeyword=="ter" && status)
+                        //{
+                        //    tokenSet.RemoveAt(0);
                             if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
                             {
                                 status = Exp();
@@ -1173,12 +1182,12 @@ namespace LexicalAnalyzer
                                 errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                 status = false;
                             }
-                        }
-                        else
-                        {
-                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
-                            status = false;
-                        }
+                        //}
+                        //else
+                        //{
+                        //    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                        //    status = false;
+                        //}
                     }
                     else
                     {
@@ -1676,7 +1685,7 @@ namespace LexicalAnalyzer
             if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
                 tokenSet.RemoveAt(0);
-                if(First_N_Follow.FirstDec_inc.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowROP1.Contains(tokenSet.ElementAt(0).classKeyword))
+                if(First_N_Follow.FirstDec_inc.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowMDM1.Contains(tokenSet.ElementAt(0).classKeyword) || tokenSet.ElementAt(0).classKeyword=="ter")
                 {
                     status = DEC_INC();
                 }
