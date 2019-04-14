@@ -49,7 +49,7 @@ namespace LexicalAnalyzer
         {
             if (fctb.Text == "")
             {
-                fctb.Text = System.IO.File.ReadAllText(@"C:\Users\DevOps\Desktop\Compiler.txt");
+                fctb.Text = System.IO.File.ReadAllText(@"Compiler.txt");
             }
             index = 0;
             lineNumber = 1;
@@ -396,16 +396,22 @@ namespace LexicalAnalyzer
             MessageBox.Show(hh);
             ParseTree PT = new ParseTree();
             List<ParseError> ParseError = PT.Parse();
+            //List<ParseError> ParseError = ParseErrorRaw.Distinct().ToList();
             string err = "";
+            ParseError Previous = new ParseError(0, "", 0);
             foreach( ParseError error in ParseError)
             {
-                err += error.ToString() + "\n";
+                if(Previous.ClassKeyword!=error.ClassKeyword && Previous.lineNumber != error.lineNumber)
+                {
+                    err += error.ToString() + "\n";
+                    Previous = error;
+                }
             }
             if(err == "")
             {
                 err = "Code compiler with 0 error";
             }
-            MessageBox.Show(err);
+            MessageBox.Show(err, "Errors");
 
         }
         public bool regexCheck(dynamic keyword, int type)

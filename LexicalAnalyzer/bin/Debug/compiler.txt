@@ -1,0 +1,14 @@
+class hey extend hey{ 
+    string[1] h = [5,];
+    public void main(){
+        string h = "hello";
+       hh hd = new hh();
+        hh();
+        return ;
+    }
+}
+class hey{
+    void hh(){
+    bh.b = 'a'; 
+  }
+}
