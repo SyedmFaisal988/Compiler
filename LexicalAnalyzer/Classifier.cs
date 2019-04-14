@@ -17,7 +17,7 @@ namespace LexicalAnalyzer
                 { "for", "for" },
                 { "while", "while" },
                 { "do", "while" },
-
+                {"class", "class" },
                 { "if", "if" },
                 { "else", "else" },
                 { "switch", "switch"},
@@ -27,14 +27,15 @@ namespace LexicalAnalyzer
                 { "return", "return" },
                 { "void", "void" },
                 { "main", "main" },
-                { "acm", "private" },
-                { "acm", "public" },
+                { "AM", "private" },
+                { "AM", "public" },
                 { "new", "new" },
                 { "this", "this" },
                 { "extend", "extend" },
                 { "sealed", "sealed" },
                 { "base", "base" },
-                { "abstract", "abstract"}
+                { "abstract", "abstract"},
+                {"$", "$" }
         };
         string[,] operators = {
             { "mdm", "*"},

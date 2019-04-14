@@ -368,6 +368,7 @@ namespace LexicalAnalyzer
             }
 
             string hh = "Break Keywords\n\r";
+            addTokenToList("$");
             foreach (Token t in StaticComponents.tokenSet)
                 hh += t.ToString() + "\n";
             MessageBox.Show(hh);

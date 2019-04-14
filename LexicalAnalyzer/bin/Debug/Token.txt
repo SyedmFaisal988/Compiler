@@ -1,7 +1,17 @@
-Class Keyword: dt Value: char Index: 28 Word Number: 7 Line Number: 1
-Class Keyword: ID Value: a Index: 33 Word Number: 8 Line Number: 1
-Class Keyword: assign Value: = Index: 35 Word Number: 9 Line Number: 1
-Class Keyword: invalid_token Value: \ Index: 35 Word Number: 10 Line Number: 1
-Class Keyword: invalid_token Value: \ Index: 36 Word Number: 11 Line Number: 1
-Class Keyword: invalid_token Value: '++ Index: 53 Word Number: 12 Line Number: 1
-
+Class Keyword: class Value: class Index: 0 Word Number: 1 Line Number: 1
+Class Keyword: ID Value: hey Index: 6 Word Number: 2 Line Number: 1
+Class Keyword: { Value: { Index: 8 Word Number: 3 Line Number: 1
+Class Keyword: AM Value: public Index: 16 Word Number: 4 Line Number: 2
+Class Keyword: void Value: void Index: 23 Word Number: 5 Line Number: 2
+Class Keyword: main Value: main Index: 28 Word Number: 6 Line Number: 2
+Class Keyword: ( Value: ( Index: 31 Word Number: 7 Line Number: 2
+Class Keyword: ) Value: ) Index: 32 Word Number: 8 Line Number: 2
+Class Keyword: { Value: { Index: 33 Word Number: 9 Line Number: 2
+Class Keyword: dt Value: string Index: 45 Word Number: 10 Line Number: 3
+Class Keyword: ID Value: f Index: 52 Word Number: 11 Line Number: 3
+Class Keyword: assign Value: = Index: 53 Word Number: 12 Line Number: 3
+Class Keyword: string_const Value: hello world Index: 55 Word Number: 13 Line Number: 3
+Class Keyword: ter Value: ; Index: 68 Word Number: 14 Line Number: 3
+Class Keyword: } Value: } Index: 75 Word Number: 15 Line Number: 4
+Class Keyword: } Value: } Index: 78 Word Number: 16 Line Number: 5
+Class Keyword: invalid_token Value: $ Index: 78 Word Number: 17 Line Number: 5
