@@ -9,12 +9,15 @@ namespace LexicalAnalyzer
     class Classifier
     {
         string[,] keywords = {
-                { "dt", "int" },
-                { "dt", "float" },
-                { "dt", "string" },
-                { "dt", "char" },
+                { "DT", "int" },
+                { "DT", "float" },
+                { "DT", "string" },
+                { "DT", "char" },
                 { "constant", "constant" },
-                { "loop", "loop" },
+                { "for", "for" },
+                { "while", "while" },
+                { "do", "while" },
+                { "class", "class" },
                 { "if", "if" },
                 { "else", "else" },
                 { "switch", "switch"},
@@ -22,31 +25,33 @@ namespace LexicalAnalyzer
                 { "break", "break" },
                 { "continue", "continue" },
                 { "return", "return" },
-                { "void", "void" },
-                { "main", "main" },
-                { "acm", "private" },
-                { "acm", "public" },
+              //  { "void", "void" },
+              //  { "main", "main" },
+                { "AM", "private" },
+                { "AM", "public" },
                 { "new", "new" },
                 { "this", "this" },
                 { "extend", "extend" },
                 { "sealed", "sealed" },
-                { "base", "base" }
+                { "base", "base" },
+                { "abstract", "abstract"},
+                {"$", "$" }
         };
         string[,] operators = {
             { "mdm", "*"},
             { "mdm", "/" },
             { "mdm", "%" },
-            { "pm", "+" },
-            { "pm", "-" },
-            { "ro", "<" },
-            { "ro", ">" },
-            { "ro", "<=" },
-            { "ro", ">=" },
-            { "ro", "!=" },
-            { "ro", "==" },
-            { "and", "&&" },
-            { "or", "||" },
-            { "not", "!"},
+            { "PM", "+" },
+            { "PM", "-" },
+            { "RO", "<" },
+            { "RO", ">" },
+            { "RO", "<=" },
+            { "RO", ">=" },
+            { "RO", "!=" },
+            { "RO", "==" },
+            { "&&", "&&" },
+            { "&&", "||" },
+            { "!", "!"},
             { "assign", "=" },
             { "compAss", "-="},
             { "compAss", "+="},
@@ -214,6 +219,9 @@ namespace LexicalAnalyzer
                     classPart = isOpr(tokenValue);
                     if (classPart == "")
                     {
+                        if (tokenValue == "$")
+                            classPart = "$";
+                        else
                         classPart = "invalid_token";
                     }
                 }

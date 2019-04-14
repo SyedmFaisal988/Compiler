@@ -25,7 +25,7 @@ namespace LexicalAnalyzer
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openFileDialog1.InitialDirectory = @"C:\";
+            openFileDialog1.InitialDirectory = @"C:\Users\DevOps\Desktop\";
             openFileDialog1.RestoreDirectory = true;
             openFileDialog1.Title = "Browse Source Files";
             openFileDialog1.DefaultExt = "txt";
@@ -47,6 +47,13 @@ namespace LexicalAnalyzer
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (fctb.Text == "")
+            {
+                fctb.Text = System.IO.File.ReadAllText(@"C:\Users\DevOps\Desktop\Compiler.txt");
+            }
+            index = 0;
+            lineNumber = 1;
+            wordNumber = 1;
             breakKeywords();
         }
 
@@ -366,11 +373,16 @@ namespace LexicalAnalyzer
             {
                 addTokenToList(temp);
             }
-
+            StartCompile();
+            
+        }
+        private void StartCompile()
+        {
             string hh = "Break Keywords\n\r";
+            addTokenToList("$");
             foreach (Token t in StaticComponents.tokenSet)
                 hh += t.ToString() + "\n";
-            MessageBox.Show(hh);
+           // MessageBox.Show(hh);
             Classifier classify = new Classifier();
             classify.classifier();
             //MessageBox.Show(classify.test());
@@ -382,6 +394,19 @@ namespace LexicalAnalyzer
                 sw.WriteLine(t.ToString());
             sw.Close();
             MessageBox.Show(hh);
+            ParseTree PT = new ParseTree();
+            List<ParseError> ParseError = PT.Parse();
+            string err = "";
+            foreach( ParseError error in ParseError)
+            {
+                err += error.ToString() + "\n";
+            }
+            if(err == "")
+            {
+                err = "Code compiler with 0 error";
+            }
+            MessageBox.Show(err);
+
         }
         public bool regexCheck(dynamic keyword, int type)
         {
