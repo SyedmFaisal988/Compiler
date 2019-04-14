@@ -51,6 +51,9 @@ namespace LexicalAnalyzer
             {
                 fctb.Text = System.IO.File.ReadAllText(@"C:\Users\DevOps\Desktop\Compiler.txt");
             }
+            index = 0;
+            lineNumber = 1;
+            wordNumber = 1;
             breakKeywords();
         }
 
@@ -397,6 +400,10 @@ namespace LexicalAnalyzer
             foreach( ParseError error in ParseError)
             {
                 err += error.ToString() + "\n";
+            }
+            if(err == "")
+            {
+                err = "Code compiler with 0 error";
             }
             MessageBox.Show(err);
 

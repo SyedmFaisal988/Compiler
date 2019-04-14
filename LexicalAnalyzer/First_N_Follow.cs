@@ -14,7 +14,7 @@ namespace LexicalAnalyzer
         public static string[] FollowAbstract = new string[] { "sealed", "class" };
         public static string[] FirstSealed = new string[] { "sealed", "null" };
         public static string[] FollowSealed = new string[] { "class" };
-        public static string[] FirstAss1 = new string[] { "new", "ID", "(", "int_const", "float_const", "string_const", "char_const" };
+        public static string[] FirstAss1 = new string[] { "new", "ID", "(","[" , "int_const", "float_const", "string_const", "char_const" };
         public static string[] FirstExtend = new string[] { "extend", "null" };
         public static string[] FollowExtend = new string[] { "{" };
         public static string[] FirstClass_Body = new string[] { "{", "ter" };
@@ -56,6 +56,7 @@ namespace LexicalAnalyzer
         public static string[] FollowR1 = new string[] { "}" };
         public static string[] FirstConst = new string[] { "int_const", "float_const", "string_const", "char_const" };
         public static string[] FirstCond3_1 = new string[] { "assign", "compAss" };
+        public static string[] FirstAssignCall = new string[] { "ID", "DT" };
         public static string[] FollowCond3_1 = new string[] { ")" };
         public static string[] FollowAssignList = new string[] { "(", "assign", "compAss" };
         public static string[] FirstInitList = new string[] { "assign" };
@@ -74,7 +75,7 @@ namespace LexicalAnalyzer
         public static string[] FirstAssign = new string[] { "ID" };
         public static string[] FirstINC_DEC = new string[] { "inc", "dec" };
         public static string[] FirstExp = new string[] { "||", "&&", "PM", "RO", "MDM", "ROP", "ID", "int_const", "float_const", "string_const", "char_const", "(", "!", "inc", "dec" };
-        public static string[] FollowExp = new string[] { "'", "ter", ")" };
+        public static string[] FollowExp = new string[] { "'", "ter", ")", "," };
         public static string[] FirstAnd = new string[] { "&&" ,"ID", "int_const", "float_const", "string_const", "char_const", "(", "!", "inc", "dec" };
         public static string[] FollowAND1 = new string[] { "||", "&&" };
         public static string[] FollowROP1 = new string[] { "RO", "&&", "||" };
