@@ -5,7 +5,10 @@ class hey extend hey{
         for(t=0 ; t<1;i++){
             int ad = b+c;
         }
-       hh hd = new hh(ad);
+
+switch(3){
+	case 4: int a=4;
+}       hh hd = new hh(ad,);
        hh(3+ 2,);
         return ;
     }

@@ -74,6 +74,7 @@ namespace LexicalAnalyzer
             {"}", "}" },
             {"[", "[" },
             {"]", "]" },
+            {":", ":" },
         };
 
         string isKeyword(string word)

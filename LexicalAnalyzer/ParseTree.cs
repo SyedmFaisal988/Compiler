@@ -384,7 +384,7 @@ namespace LexicalAnalyzer
                         if (First_N_Follow.FirstMST.Contains(tokenSet.ElementAt(0).classKeyword) && status)
                         {
                             status = MST();
-                            if (tokenSet.ElementAt(0).classKeyword == "break")
+                           /* if (tokenSet.ElementAt(0).classKeyword == "break")
                             {
                                 tokenSet.RemoveAt(0);
                                 if (tokenSet.ElementAt(0).classKeyword == "ter"){
@@ -395,7 +395,7 @@ namespace LexicalAnalyzer
                             {
                                 errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                 status = false;
-                            }
+                            }*/
                         }
                         else
                         {
