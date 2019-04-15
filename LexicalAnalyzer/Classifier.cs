@@ -38,9 +38,9 @@ namespace LexicalAnalyzer
                 {"$", "$" }
         };
         string[,] operators = {
-            { "mdm", "*"},
-            { "mdm", "/" },
-            { "mdm", "%" },
+            { "MDM", "*"},
+            { "MDM", "/" },
+            { "MDM", "%" },
             { "PM", "+" },
             { "PM", "-" },
             { "RO", "<" },

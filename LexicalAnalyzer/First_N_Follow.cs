@@ -75,13 +75,13 @@ namespace LexicalAnalyzer
         public static string[] FirstAssign = new string[] { "ID" };
         public static string[] FirstINC_DEC = new string[] { "inc", "dec" };
         public static string[] FirstExp = new string[] { "||", "&&", "PM", "RO", "MDM", "ROP", "ID", "int_const", "float_const", "string_const", "char_const", "(", "!", "inc", "dec" };
-        public static string[] FollowExp = new string[] { "'", "ter", ")", ",", ":" };
+        public static string[] FollowExp = new string[] { "'", "ter", ")", ",", ":", "]", "}" };
         public static string[] FirstAnd = new string[] { "&&" ,"ID", "int_const", "float_const", "string_const", "char_const", "(", "!", "inc", "dec" };
         public static string[] FollowAND1 = new string[] { "||", "&&" };
         public static string[] FollowROP1 = new string[] { "RO", "&&", "||" };
         public static string[] FollowPM1 = new string[] { "PM", "||", "&&", "RO" };
         public static string[] FollowMDM1 = new string[] { "PM", "RO", "||", "&&", "MDM" };
-        public static string[] FirstDec_inc = new string[] { "dec", "inc", "(", ".", "," };
+        public static string[] FirstDec_inc = new string[] { "dec", "inc", "(", ".", ",", "[" };
         public static string[] FirstIf_else_stmt = new string[] { "if" };
         public static string[] FirstSwitch_stmt = new string[] { "switch" };
         public static string[] FirstSST = new string[] { "for", "while", "do", "if", "switch", "AM", "AM", "DT", "ID", "abstract", "return", "break", "continue", "ID" };

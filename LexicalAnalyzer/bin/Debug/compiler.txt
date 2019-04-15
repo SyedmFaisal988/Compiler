@@ -4,10 +4,12 @@ class hey extend hey{
         string h = "hello";
         for(t=0 ; t<1;i++){
             int ad = b+c;
+            hf d = hf();
+            ft tv = hr()+ gt();
         }
 
 switch(3){
-	case 4: int a=4;
+    case 4: int a=4; break;
 }       hh hd = new hh(ad,);
        hh(3+ 2,);
         return ;
