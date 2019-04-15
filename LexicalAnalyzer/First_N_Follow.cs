@@ -36,6 +36,9 @@ namespace LexicalAnalyzer
         public static string[] FirstDec2 = new string[] { "ID", "new" };
         public static string[] FollowDec2 = new string[] { "ter" };
         public static string[] FirstDec5 = new string[] { "assign", "(", "ter" };
+        public static string[] FirstArrayOpt = new string[] { "[" };
+        public static string[] FollowArrayOpt = new string[] { "ID" };
+        public static string[] FirstFunctParams = new string[] { "ID", "DT" };
         public static string[] FollowDec5 = new string[] { "AM", "AM", "DT", "ID", "abstract" };
         public static string[] FirstParams = new string[] { "||", "&&","PM","RO","MDM","ROP", "ID", "int_const", "float_const", "string_const", "char_const", "(", "!", "inc","dec", "null" };
         public static string[] FollowParams = new string[] { ")", "]" };

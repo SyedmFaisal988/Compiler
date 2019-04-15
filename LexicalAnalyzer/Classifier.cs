@@ -16,7 +16,7 @@ namespace LexicalAnalyzer
                 { "constant", "constant" },
                 { "for", "for" },
                 { "while", "while" },
-                { "do", "while" },
+                { "do", "do" },
                 { "class", "class" },
                 { "if", "if" },
                 { "else", "else" },
