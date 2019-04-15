@@ -1,11 +1,16 @@
 class hey extend hey{ 
     string[1] h = [4,];
-    public void main(){
+    int[1] h;
+    public int[1] main(a,){
         string h = "hello";
+        while(5%t<3){
+            hdy();
+            //int[1] d = d;
+        }
         for(t=0 ; t<1;i++){
             int ad = b+c;
             hf d = hf();
-            ft tv = hr()+ gt();
+            ft tv = (hr().a + gt() + at().f[3].t);
         }
 
 switch(3){

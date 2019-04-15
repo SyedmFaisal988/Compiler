@@ -2217,73 +2217,70 @@ namespace LexicalAnalyzer
         bool Decl5()
         {
             bool status = true;
-            if (tokenSet.ElementAt(0).classKeyword == "[")
+            if (tokenSet.ElementAt(0).classKeyword == "assign")
             {
                 tokenSet.RemoveAt(0);
-                if(tokenSet.ElementAt(0).classKeyword == "int_const")
+                if (First_N_Follow.FirstArrayInit.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
-                    tokenSet.RemoveAt(0);
-                    if (tokenSet.ElementAt(0).classKeyword == "]")
+                    status = ArrayInit();
+                    if (tokenSet.ElementAt(0).classKeyword == "ter" && status)
                     {
                         tokenSet.RemoveAt(0);
-                        if (tokenSet.ElementAt(0).classKeyword == "ID")
-                        {
-                            tokenSet.RemoveAt(0);
-                            if(tokenSet.ElementAt(0).classKeyword == "assign")
-                            {
-                                tokenSet.RemoveAt(0);
-                                if (First_N_Follow.FirstArrayInit.Contains(tokenSet.ElementAt(0).classKeyword))
-                                {
-                                    status = ArrayInit();
-                                    if(tokenSet.ElementAt(0).classKeyword=="ter" && status)
-                                    {
-                                        tokenSet.RemoveAt(0);
-                                    }
-                                    else
-                                    {
-                                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
-                                        status = false;
-                                    }
-                                }
-                                else
-                                {
-                                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
-                                    status = false;
-                                }
-                            }
-                            else
-                            {
-                                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
-                                status = false;
-                            }
-                        }
-                        else if(tokenSet.ElementAt(0).classKeyword == "ter")
-                        {
-                            tokenSet.RemoveAt(0);
-                        }
-                        else
-                        {
-                            errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
-                            status = false;
-                        }
                     }
                     else
                     {
-                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
                 else
                 {
-                    errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                    status = false;
+                }
+
+            }
+            else if (tokenSet.ElementAt(0).classKeyword == "ter")
+            {
+                tokenSet.RemoveAt(0);
+            }
+            else if (tokenSet.ElementAt(0).classKeyword == "(")
+            {
+                tokenSet.RemoveAt(0);
+                if(First_N_Follow.FirstParams.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowParams.Contains(tokenSet.ElementAt(0).classKeyword))
+                {
+                    status = Params();
+                    if (tokenSet.ElementAt(0).classKeyword == ")")
+                    {
+                        tokenSet.RemoveAt(0);
+                        if(First_N_Follow.FirstFunction_body.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowFunction_body.Contains(tokenSet.ElementAt(0).classKeyword))
+                        {
+                            status = FunctionBody();
+                        }
+                        else
+                        {
+                            errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                            status = false;
+                        }
+                    }
+                    else
+                    {
+                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                        status = false;
+                    }
+                }
+                else
+                {
+                    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
             }
             else
             {
-                errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
+
             return status;
         }
         bool Decl()
@@ -2306,7 +2303,35 @@ namespace LexicalAnalyzer
                     }
                     else if (tokenSet.ElementAt(0).classKeyword == "[")
                     {
-                        status = Decl5();
+                        tokenSet.RemoveAt(0);
+                        if(First_N_Follow.FirstInt_const.Contains(tokenSet.ElementAt(0).classKeyword))
+                        {
+                            tokenSet.RemoveAt(0);
+                            if (tokenSet.ElementAt(0).classKeyword == "]")
+                            {
+                                tokenSet.RemoveAt(0);
+                                if (tokenSet.ElementAt(0).classKeyword == "ID")
+                                {
+                                    tokenSet.RemoveAt(0);
+                                    status = Decl5();
+                                }
+                                else
+                                {
+                                    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                                    status = false;
+                                }
+                            }
+                            else
+                            {
+                                errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                                status = false;
+                            }
+                        }
+                        else
+                        {
+                            errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                            status = false;
+                        }
                     }
                     else
                     {
@@ -2316,10 +2341,41 @@ namespace LexicalAnalyzer
                 }
                 else if (tokenSet.ElementAt(0).classKeyword == "[")
                 {
-                    status = Decl5();
-                    if (!status)
+                    tokenSet.RemoveAt(0);
+                    if (First_N_Follow.FirstInt_const.Contains(tokenSet.ElementAt(0).classKeyword))
                     {
-                        errorLine.Add(new ParseError( tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                        tokenSet.RemoveAt(0);
+                        if (tokenSet.ElementAt(0).classKeyword == "]")
+                        {
+                            tokenSet.RemoveAt(0);
+                            if (tokenSet.ElementAt(0).classKeyword == "ID")
+                            {
+                                tokenSet.RemoveAt(0);
+                                if (First_N_Follow.FirstDec5.Contains(tokenSet.ElementAt(0).classKeyword))
+                                {
+                                    status = Decl5();
+                                }
+                                else
+                                {
+                                    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                                    status = false;
+                                }
+                            }
+                            else
+                            {
+                                errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                                status = false;
+                            }
+                        }
+                        else
+                        {
+                            errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                            status = false;
+                        }
+                    }
+                    else
+                    {
+                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
@@ -2395,6 +2451,7 @@ namespace LexicalAnalyzer
             else if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
                 tokenSet.RemoveAt(0);
+
                 if (tokenSet.ElementAt(0).classKeyword == "ID")
                 {
                     tokenSet.RemoveAt(0);
@@ -2418,6 +2475,46 @@ namespace LexicalAnalyzer
                                 if (First_N_Follow.FirstFunction_body.Contains(tokenSet.ElementAt(0).classKeyword))
                                 {
                                     status = FunctionBody();
+                                }
+                                else
+                                {
+                                    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                                    status = false;
+                                }
+                            }
+                            else
+                            {
+                                errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                                status = false;
+                            }
+                        }
+                        else
+                        {
+                            errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                            status = false;
+                        }
+                    }
+                    else
+                    {
+                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                        status = false;
+                    }
+                }
+                else if (tokenSet.ElementAt(0).classKeyword == "[")
+                {
+                    tokenSet.RemoveAt(0);
+                    if (First_N_Follow.FirstInt_const.Contains(tokenSet.ElementAt(0).classKeyword))
+                    {
+                        tokenSet.RemoveAt(0);
+                        if (tokenSet.ElementAt(0).classKeyword == "]")
+                        {
+                            tokenSet.RemoveAt(0);
+                            if (tokenSet.ElementAt(0).classKeyword == "ID")
+                            {
+                                tokenSet.RemoveAt(0);
+                                if (First_N_Follow.FirstDec5.Contains(tokenSet.ElementAt(0).classKeyword))
+                                {
+                                    status = Decl5();
                                 }
                                 else
                                 {
