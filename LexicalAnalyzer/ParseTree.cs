@@ -560,6 +560,11 @@ namespace LexicalAnalyzer
                         {
                             tokenSet.RemoveAt(0);
                         }
+                        else
+                        {
+                            errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                            status = false;
+                        }
                     }
                     else
                     {
@@ -681,6 +686,15 @@ namespace LexicalAnalyzer
                 if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
                     status = Exp();
+                    if (tokenSet.ElementAt(0).classKeyword == "ter")
+                    {
+                        tokenSet.RemoveAt(0);
+                    }
+                    else
+                    {
+                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                        status = false;
+                    }
                 }
                 else
                 {
@@ -2584,8 +2598,7 @@ namespace LexicalAnalyzer
             else if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
                 tokenSet.RemoveAt(0);
-
-                if (tokenSet.ElementAt(0).classKeyword == "ID")
+              if (tokenSet.ElementAt(0).classKeyword == "ID")
                 {
                     tokenSet.RemoveAt(0);
                     if (First_N_Follow.FirstAss.Contains(tokenSet.ElementAt(0).classKeyword))
