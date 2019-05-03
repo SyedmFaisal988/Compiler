@@ -485,6 +485,14 @@ namespace LexicalAnalyzer
             fctb.Cut();
         }
 
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue == 116)
+            {
+                startToolStripMenuItem_Click(sender, e);
+            }
+}
+
         private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             fctb.Paste();

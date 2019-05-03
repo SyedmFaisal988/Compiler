@@ -2647,6 +2647,37 @@ namespace LexicalAnalyzer
                         status = false;
                     }
                 }
+                else if (tokenSet.ElementAt(0).classKeyword == "(")
+                {
+                    tokenSet.RemoveAt(0);
+                    if (First_N_Follow.FirstFunctParams.Contains(tokenSet.ElementAt(0).classKeyword) || tokenSet.ElementAt(0).classKeyword==")")
+                    {
+                        status = funct_params();
+                        if (tokenSet.ElementAt(0).classKeyword == ")")
+                        {
+                            tokenSet.RemoveAt(0);
+                            if (First_N_Follow.FirstFunction_body.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowFunction_body.Contains(tokenSet.ElementAt(0).classKeyword))
+                            {
+                                status = FunctionBody();
+                            }
+                            else
+                            {
+                                errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                                status = false;
+                            }
+                        }
+                        else
+                        {
+                            errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                            status = false;
+                        }
+                    }
+                    else
+                    {
+                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                        status = false;
+                    }
+                }
                 else if (tokenSet.ElementAt(0).classKeyword == "[")
                 {
                     tokenSet.RemoveAt(0);

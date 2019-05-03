@@ -31,70 +31,7 @@ class hey{
     hd[4] k;
     a.b.k.j = a.b[3].c[6].d.f();
   }
-}class hey extend hey{ 
-    string[1] h = [4,];
-    int[6] h;
-    public int[1] main( int[1] a){
-        string h = "hello";
-        do{
-            char a = 'a';
-        }
-        while(t<3);
-        while(5%t<3){
-            hdy();
-            int[1] d = d;
-        }
-        for(t=0 ; t<1;i++){
-            int ad = b+c;
-            hf d = hf();
-            ft tv = (hr().a + gt() + at().f[3].t);
-        }
-
-switch(3){
-    case 4: int a=4; break;
-}       hh hd = new hh(ad,);
-       hh(3+ 2,);
-       return d[2];
-    }
-}
-class hey{
-    void hh(){
-    bh.b = 'a'; 
-    int[1] d = d;
-    hd[4] k;
-    a.b.k.j = a.b[3].c[6].d.f();
-  }
-}class hey extend hey{ 
-    string[1] h = [4,];
-    int[6] h;
-    public int[1] main( int[1] a){
-        string h = "hello";
-        do{
-            char a = 'a';
-        }
-        while(t<3);
-        while(5%t<3){
-            hdy();
-            int[1] d = d;
-        }
-        for(t=0 ; t<1;i++){
-            int ad = b+c;
-            hf d = hf();
-            ft tv = (hr().a + gt() + at().f[3].t);
-        }
-
-switch(3){
-    case 4: int a=4; break;
-}       hh hd = new hh(ad,);
-       hh(3+ 2,);
-       return d[2];
-    }
-}
-class hey{
-    void hh(){
-    bh.b = 'a'; 
-    int[1] d = d;
-    hd[4] k;
-    a.b.k.j = a.b[3].c[6].d.f();
+  public hey(){
+    int a;
   }
 }
