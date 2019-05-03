@@ -1819,7 +1819,7 @@ namespace LexicalAnalyzer
             if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
                 tokenSet.RemoveAt(0);
-                if (First_N_Follow.FirstDec_inc.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowMDM1.Contains(tokenSet.ElementAt(0).classKeyword) || tokenSet.ElementAt(0).classKeyword == "ter" || tokenSet.ElementAt(0).classKeyword == "]")
+                if (First_N_Follow.FirstDec_inc.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowDec_inc.Contains(tokenSet.ElementAt(0).classKeyword ))
                 {
                     status = DEC_INC();
                 }

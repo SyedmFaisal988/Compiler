@@ -8,6 +8,12 @@ class hey extend hey{
             char a = 'a';
         }
         while(t<3);
+        if(a){
+        	string b;
+        }
+        else{
+        	int a;
+        }
         while(5%t<3){
             hdy();
             int[1] d = d;
