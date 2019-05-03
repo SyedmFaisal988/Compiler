@@ -171,6 +171,19 @@ namespace LexicalAnalyzer
             {
                 status = Init2();
             }
+            else if (tokenSet.ElementAt(0).classKeyword=="assign")
+            {
+                tokenSet.RemoveAt(0);
+                if (First_N_Follow.FirstInit2.Contains(tokenSet.ElementAt(0).classKeyword))
+                {
+                    status = Init2();
+                }
+                else
+                {
+                    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                    status = false;
+                }
+            }
             return status;
         }
         bool List()
@@ -183,9 +196,9 @@ namespace LexicalAnalyzer
             else if (tokenSet.ElementAt(0).classKeyword == ",")
             {
                 tokenSet.RemoveAt(0);
-                if (tokenSet.ElementAt(0).classKeyword == "ID")
-                {
-                    tokenSet.RemoveAt(0);
+                //if (tokenSet.ElementAt(0).classKeyword == "ID")
+                //{
+                //    tokenSet.RemoveAt(0);
                     if (First_N_Follow.FirstInit.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowInit.Contains(tokenSet.ElementAt(0).classKeyword))
                     {
                         status = Init();
@@ -199,12 +212,12 @@ namespace LexicalAnalyzer
                             status = false;
                         }
                     }
-                }
-                else
-                {
-                    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
-                    status = false;
-                }
+                //}
+                //else
+                //{
+                //    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                //    status = false;
+                //}
             }
             else
             {
@@ -337,19 +350,6 @@ namespace LexicalAnalyzer
                     if (First_N_Follow.FirstMST.Contains(tokenSet.ElementAt(0).classKeyword))
                     {
                         status = MST();
-                        if (tokenSet.ElementAt(0).classKeyword == "break" && status)
-                        {
-                            tokenSet.RemoveAt(0);
-                            if (tokenSet.ElementAt(0).classKeyword == "ter")
-                            {
-                                tokenSet.RemoveAt(0);
-                            }
-                        }
-                        else
-                        {
-                            errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
-                            status = false;
-                        }
                     }
                     else
                     {
@@ -2479,6 +2479,10 @@ namespace LexicalAnalyzer
                             errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                             status = false;
                         }
+                    }
+                    else if (First_N_Follow.FirstList.Contains(tokenSet.ElementAt(0).classKeyword))
+                    {
+                        status = List();
                     }
                     else
                     {

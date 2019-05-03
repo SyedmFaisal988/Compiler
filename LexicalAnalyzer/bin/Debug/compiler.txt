@@ -1,6 +1,7 @@
 class hey extend hey{ 
     string[1] h = [4,];
     int[6] h;
+    int a,b=10;
     public int[1] main( int[1] a){
         string h = "hello";
         do{
@@ -19,6 +20,7 @@ class hey extend hey{
 
 switch(3){
     case 4: int a=4; break;
+    default : int b; break;
 }       hh hd = new hh(ad,);
        hh(3+ 2,);
        return d[2];

@@ -47,7 +47,7 @@ namespace LexicalAnalyzer
         public static string[] FollowCommas = new string[] { ")","]" };
         public static string[] FirstArrayInit = new string[] { "ID", "[" };
         public static string[] FollowArrayInit = new string[] { "" };
-        public static string[] FirstInit = new string[] { "int_const", "float_const", "string_const", "char_const", "null" };
+        public static string[] FirstInit = new string[] { "int_const", "float_const", "string_const", "char_const", "ID","assign" ,"null" };
         public static string[] FollowInit = new string[] { "ter", "," };
         public static string[] FirstInit2 = new string[] { "int_const", "float_const", "string_const", "char_const", "ID" };
         public static string[] FirstList = new string[] { "ter", "," };

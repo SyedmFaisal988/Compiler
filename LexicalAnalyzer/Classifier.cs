@@ -35,6 +35,7 @@ namespace LexicalAnalyzer
                 { "sealed", "sealed" },
                 { "base", "base" },
                 { "abstract", "abstract"},
+                {"default", "default" },
                 {"$", "$" }
         };
         string[,] operators = {
