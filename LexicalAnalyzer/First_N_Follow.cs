@@ -86,6 +86,7 @@ namespace LexicalAnalyzer
         public static string[] FollowMDM1 = new string[] { "PM", "RO", "||", "&&", "MDM" };
         public static string[] FirstDec_inc = new string[] { "dec", "inc", "(", ".", ",", "[" };
         public static string[] FollowDec_inc = new string[] { "PM", "RO", "||", "&&", "MDM", "ter", "]", ")" };
+        public static string[] FirstDecl6 = new string[] { "ID", "[" };
         public static string[] FirstIf_else_stmt = new string[] { "if" };
         public static string[] FirstSwitch_stmt = new string[] { "switch" };
         public static string[] FirstSST = new string[] { "for", "while", "do", "if", "switch", "AM", "AM", "DT", "ID", "abstract", "return", "break", "continue", "ID" };
