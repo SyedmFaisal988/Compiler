@@ -1,8 +1,8 @@
 class hey extend hey{ 
-    string[1] h = [4,];
-    int[6] h;
+    string[] h = [4];
+    int[] h;
     int a,b=10;
-    public int[1] main( int[1] a){
+    public int main( int[] a){
         string h = "hello";
         do{
             char a = 'a';
@@ -16,7 +16,7 @@ class hey extend hey{
         }
         while(5%t<3){
             hdy();
-            int[1] d = d;
+            int[] d = d;
         }
         for(t=0 ; t<1;i++){
             int ad = b+c;
@@ -27,16 +27,16 @@ class hey extend hey{
 switch(3){
     case 4: int a=4; break;
     default : int b; break;
-}       hh hd = new hh(ad,);
-       hh(3+ 2,);
+}       hh hd = new hh(ad, 3);
+       hh(3+ 2);
        return d[2];
     }
 }
 class hey{
     void hh(){
     bh.b = 'a'; 
-    int[1] d = d;
-    hd[4] k;
+    int[] d = d;
+    hd[] k;
     a.b.k.j = a.b[3].c[6].d.f();
   }
   public hey(){
