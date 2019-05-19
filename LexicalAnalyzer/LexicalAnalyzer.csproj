@@ -58,6 +58,11 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassData.cs" />
+    <Compile Include="ClassDataRow.cs" />
+    <Compile Include="ClassesTableRow.cs" />
+    <Compile Include="FunctionTableRow.cs" />
+    <Compile Include="HelperFunctions.cs" />
     <Compile Include="ParseError.cs" />
     <Compile Include="Classifier.cs" />
     <Compile Include="First_N_Follow.cs" />
