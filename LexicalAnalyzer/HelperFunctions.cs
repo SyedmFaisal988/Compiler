@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,8 +11,111 @@ namespace LexicalAnalyzer
         List<ClassesTableRow> ClassesTable;
         List<FunctionTableRow> FunctionTable;
         Stack<int> ScopeHirarchy;
+        ClassData currentRef;
         int currentScope;
         int scopeCount;
+        string[,] compatible = {
+            { "int", "int", "=", "int" },
+            { "float", "int", "=", "float" },
+            { "float", "float", "=", "float" },
+            { "char", "char", "=", "char" },
+            { "string", "string", "=", "string"},
+            { "int", "int", "+", "int" },
+            { "float", "int", "+", "float" },
+            { "int", "float", "+", "float" },
+            { "float", "float", "+", "float" },
+            { "string", "string", "+", "string" },
+            { "string", "float", "+", "string" },
+            { "string", "int", "+", "string" },
+            { "string", "char", "+", "string" },
+            { "int", "string", "+", "string" },
+            { "float", "string", "+", "string" },
+            { "char", "string", "+", "string" },
+            { "string", "string", "-", "string" },
+            { "string", "float", "-", "string" },
+            { "string", "int", "-", "string" },
+            { "string", "char", "-", "string" },
+            { "int", "string", "-", "string" },
+            { "float", "string", "-", "string" },
+            { "char", "string", "-", "string" },
+            { "int", "int", "-", "int" },
+            { "float", "int", "-","float" },
+            { "int", "float", "-","float" },
+            { "float", "float", "-","float" },
+            { "int", "int", "*", "int" },
+            { "float", "int", "*", "float" },
+            { "int", "float", "*","float" },
+            { "float", "float", "*","float" },
+            { "int", "int", "/", "float" },
+            { "float", "int", "/", "float" },
+            { "int", "float", "/","float" },
+            { "float", "float", "/","float" },
+
+            { "int", "int", "<", "int" },
+            { "int", "float", "<", "int" },
+            { "float", "int", "<", "int" },
+            { "float", "float", "<", "int" },
+            { "int", "int", ">", "int" },
+            { "int", "float", ">", "int" },
+            { "float", "int", ">", "int" },
+            { "float", "float", ">", "int" },
+            { "int", "int", "<=", "int" },
+            { "int", "float", "<=", "int" },
+            { "float", "int", "<=", "int" },
+            { "float", "float", "<=", "int" },
+            { "int", "int", ">=", "int" },
+            { "int", "float", ">=", "int" },
+            { "float", "int", ">=", "int" },
+            { "float", "float", ">=", "int" },
+            { "int", "int", "!=", "int" },
+            { "int", "float", "!=", "int" },
+            { "float", "int", "!=", "int" },
+            { "float", "float", "!=", "int" },
+            { "int", "int", "==", "int" },
+            { "int", "float", "==", "int" },
+            { "float", "int", "==", "int" },
+            { "float", "float", "==", "int" },
+            { "int", "int", "&&", "int" },
+            { "int", "float", "&&", "int" },
+            { "float", "int", "&&", "int" },
+            { "float", "float", "&&", "int" },
+            { "int", "int", "||", "int" },
+            { "int", "float", "||", "int" },
+            { "float", "int", "||", "int" },
+            { "float", "float", "||", "int" },
+
+            { "int", "int", "+=", "int" },
+            { "float", "int", "+=", "float" },
+            { "int", "float", "+=", "float" },
+            { "float", "float", "+=", "float" },
+            { "string", "string", "+=", "string" },
+            { "string", "float", "+=", "string" },
+            { "string", "int", "+=", "string" },
+            { "string", "char", "+=", "string" },
+            { "int", "string", "+=", "string" },
+            { "float", "string", "+=", "string" },
+            { "char", "string", "+=", "string" },
+            { "string", "string", "-=", "string" },
+            { "string", "float", "-=", "string" },
+            { "string", "int", "-=", "string" },
+            { "string", "char", "-=", "string" },
+            { "int", "string", "-=", "string" },
+            { "float", "string", "-=", "string" },
+            { "char", "string", "-=", "string" },
+            { "int", "int", "-=", "int" },
+            { "float", "int", "-=","float" },
+            { "int", "float", "-=","float" },
+            { "float", "float", "-=","float" },
+            { "int", "int", "*=", "int" },
+            { "float", "int", "*=", "float" },
+            { "int", "float", "*=","float" },
+            { "float", "float", "*=","float" },
+            { "int", "int", "/=", "float" },
+            { "float", "int", "/=", "float" },
+            { "int", "float", "/=","float" },
+            { "float", "float", "/=","float" },
+
+        };
         public HelperFunctions()
         {
             ClassesTable = new List<ClassesTableRow>();
@@ -21,7 +123,7 @@ namespace LexicalAnalyzer
             ScopeHirarchy = new Stack<int>();
             currentScope = -1;
             scopeCount = 0;
-
+            currentRef = new ClassData();
         }
         public string lookup(string name) 
         {
@@ -103,6 +205,16 @@ namespace LexicalAnalyzer
             currentScope = ScopeHirarchy.Pop();
             return currentScope;
         }
-
+        public string Compatible(string type1, string type2, string opr)
+        {
+            string type = "";
+            int length = compatible.Length / 4;
+            for(int i = 0; i < length; i++)
+            {
+                if (compatible[i, 0] == type1 && compatible[i, 1] == type2 && compatible[i, 2] == opr)
+                    type = compatible[i, 3];
+            }
+            return type;
+        }
     }
 }

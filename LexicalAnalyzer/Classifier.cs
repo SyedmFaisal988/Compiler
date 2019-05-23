@@ -51,9 +51,7 @@ namespace LexicalAnalyzer
             { "RO", "!=" },
             { "RO", "==" },
             { "&&", "&&" },
-            { "&&", "||" },
-            { "!", "!"},
-            { "assign", "=" },
+            { "||", "||" },
             { "compAss", "-="},
             { "compAss", "+="},
             { "compAss", "*="},
@@ -61,6 +59,8 @@ namespace LexicalAnalyzer
             { "compAss", "%="},
             { "inc", "++"},
             {"dec", "--" },
+            { "!", "!"},
+            { "assign", "=" },
         };
 
         string[,] puntuators =
