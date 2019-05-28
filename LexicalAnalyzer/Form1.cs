@@ -412,6 +412,11 @@ namespace LexicalAnalyzer
                 err = "Code compiler with 0 error";
             }
             MessageBox.Show(err, "Errors");
+            List<string> SemanticErrors = PT.SemanticErrors;
+            foreach(var error in SemanticErrors)
+            {
+                MessageBox.Show(error);
+            }
 
         }
         public bool regexCheck(dynamic keyword, int type)

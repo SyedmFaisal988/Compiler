@@ -13,7 +13,7 @@ namespace LexicalAnalyzer
         {
             classData = new List<ClassDataRow>();
         }
-        public bool addRow(string name, string type, string am)
+        public bool addRow(string name, string type, string am, string tm)
         {
             foreach(var temp in classData)
             {
@@ -22,7 +22,11 @@ namespace LexicalAnalyzer
                     return false;
                 }
             }
-            classData.Add(new ClassDataRow(name, type, am));
+            if (tm == "")
+            {
+                tm = "general";
+            }
+            classData.Add(new ClassDataRow(name, type, am, tm));
             return true;
         }
         public ClassDataRow getRow(string name)

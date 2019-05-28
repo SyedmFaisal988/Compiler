@@ -8,10 +8,19 @@ namespace LexicalAnalyzer
 {
     class ParseTree
     {
-        private List<Token> tokenSet = new List<Token>(StaticComponents.tokenSet.Count);
-        private List<ParseError> errorLine = new List<ParseError>();
+        string t2, opr = "";
+        private List<Token> tokenSet;
+        private List<ParseError> errorLine;
+        private HelperFunctions helpers;
+        public List<string> SemanticErrors;
+        ClassData Ref;
         public ParseTree()
         {
+            tokenSet = new List<Token>(StaticComponents.tokenSet.Count);
+            errorLine = new List<ParseError>();
+            helpers = new HelperFunctions();
+            SemanticErrors = new List<string>();
+            Ref = null;
             StaticComponents.tokenSet.ForEach((item) =>
             {
                 tokenSet.Add(item);
@@ -55,21 +64,33 @@ namespace LexicalAnalyzer
         }
         bool Class_str()
         {
+            string category = "general";
+            string parent = "";
+            string type = "";
+            string name = "";
+
             bool status = true;
             if (First_N_Follow.FirstAbstract.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowAbstract.Contains(tokenSet.ElementAt(0).classKeyword))
             {
-                status = Abstract_Class();
+                status = Abstract_Class(ref category);
                 if (First_N_Follow.FirstSealed.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowSealed.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
-                    status = Sealed();
+                    status = Sealed(ref category);
                     if (tokenSet.ElementAt(0).classKeyword == "class")
                     {
+                        type = tokenSet.ElementAt(0).classKeyword;
                         tokenSet.RemoveAt(0);
                         if (tokenSet.ElementAt(0).classKeyword == "ID")
                         {
+                            name = tokenSet.ElementAt(0).value;
                             tokenSet.RemoveAt(0);
-                            status = Extend();
-                            if (First_N_Follow.FirstClass_Body.Contains(tokenSet.ElementAt(0).classKeyword))
+                            status = Extend(ref parent);
+                            Ref = helpers.insert(name, type, category, parent);   //ye add kiya ha
+                            if(Ref == null)
+                            {
+                                SemanticErrors.Add("Redeclaration Error At " + tokenSet.ElementAt(0).lineNumber);
+                            }
+                            else if (First_N_Follow.FirstClass_Body.Contains(tokenSet.ElementAt(0).classKeyword))
                             {
                                 status = Class_Body();
                                 if (status)
@@ -128,28 +149,47 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool AM()
+        bool AM(ref string am)
         {
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "AM")
             {
+                am = tokenSet.ElementAt(0).value;
                 tokenSet.RemoveAt(0);
             }
             return status;
         }
-        bool Init2()
+        bool Init2(string t1)
         {
             bool status = true;
             if (First_N_Follow.FirstConst.Contains(tokenSet.ElementAt(0).classKeyword))
             {
+                string temp = helpers.Compatible(t1, tokenSet.ElementAt(0).classKeyword, "=");
+                if (temp == "")
+                {
+                    SemanticErrors.Add("Type Mismatch in assigning At " + tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
                 tokenSet.RemoveAt(0);
             }
             else if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
-                tokenSet.RemoveAt(0);
-                if (First_N_Follow.FirstInit.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowInit.Contains(tokenSet.ElementAt(0).classKeyword))
+                string t2 = helpers.lookup(tokenSet.ElementAt(0).value);
+                if (t2 == "")
                 {
-                    status = Init();
+                    SemanticErrors.Add("Use of undeclared variable" + tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+                t1 = helpers.Compatible(t1, t2, "=");
+                if (t1 == "")
+                {
+                    SemanticErrors.Add("Type Mismatch in assigning At " + tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+                tokenSet.RemoveAt(0);
+                if (First_N_Follow.FirstInit.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowInit.Contains(tokenSet.ElementAt(0).classKeyword) && status)
+                {
+                    status = Init(t1);
                     if (!status)
                     {
                         errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
@@ -164,19 +204,20 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool Init()
+        bool Init(string t1)
         {
             bool status = true;
-            if (First_N_Follow.FirstInit2.Contains(tokenSet.ElementAt(0).classKeyword))
-            {
-                status = Init2();
-            }
-            else if (tokenSet.ElementAt(0).classKeyword=="assign")
+            //if (First_N_Follow.FirstInit2.Contains(tokenSet.ElementAt(0).classKeyword))  init main kharabi tu isay dekho
+            //{
+            //    status = Init2();
+            //}
+            //else 
+            if (tokenSet.ElementAt(0).classKeyword=="assign")
             {
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstInit2.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
-                    status = Init2();
+                    status = Init2(t1);
                 }
                 else
                 {
@@ -186,25 +227,28 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool List()
+        bool List(string am, string type, string name)
         {
             bool status = true;
+            string tm = "";
             if (tokenSet.ElementAt(0).classKeyword == "ter")
             {
+                if (name!="" && !helpers.insertCT(name, type, am, tm,Ref))
+                {
+                    SemanticErrors.Add("Redeclaration Error at " + tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
                 tokenSet.RemoveAt(0);
             }
             else if (tokenSet.ElementAt(0).classKeyword == ",")
             {
                 tokenSet.RemoveAt(0);
-                //if (tokenSet.ElementAt(0).classKeyword == "ID")
-                //{
-                //    tokenSet.RemoveAt(0);
                     if (First_N_Follow.FirstInit.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowInit.Contains(tokenSet.ElementAt(0).classKeyword))
                     {
-                        status = Init();
+                        status = Init(type);
                         if (First_N_Follow.FirstList.Contains(tokenSet.ElementAt(0).classKeyword) && status)
                         {
-                            status = List();
+                            status = List(am, type, "");
                         }
                         else
                         {
@@ -269,13 +313,14 @@ namespace LexicalAnalyzer
         }
         bool Cond3_1()
         {
+            string t2 = ""; //solve karna ha
             bool status = true;
             if (First_N_Follow.FirstCond3_1.Contains(tokenSet.ElementAt(0).classKeyword))
             {
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
-                    status = Exp();
+                    status = Exp(ref t2);
                 }
                 else
                 {
@@ -1437,18 +1482,30 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool Decl2()
+        bool Decl2(string t1)
         {
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
-                tokenSet.RemoveAt(0);
-                if (First_N_Follow.FirstInit.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowInit.Contains(tokenSet.ElementAt(0).classKeyword))
+                string t2 = helpers.lookup(tokenSet.ElementAt(0).value);
+                if (t2 == "")
                 {
-                    status = Init();
+                    SemanticErrors.Add("Use of undeclared variable At " + tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+                t1 = helpers.Compatible(t1, t2, "=");
+                if(t1 == "")
+                {
+                    SemanticErrors.Add("Type Mismatch in assigning At " + tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+                tokenSet.RemoveAt(0);
+                if (First_N_Follow.FirstInit.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowInit.Contains(tokenSet.ElementAt(0).classKeyword) && status)
+                {
+                    status = Init(t1);
                     if (First_N_Follow.FirstList.Contains(tokenSet.ElementAt(0).classKeyword) && status)
                     {
-                        status = List();
+                        status = List("private", t1, "");
                         if (!status)
                         {
                             errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
@@ -1472,13 +1529,19 @@ namespace LexicalAnalyzer
                 tokenSet.RemoveAt(0);
                 if (tokenSet.ElementAt(0).classKeyword == "DT")
                 {
+                    t2 = tokenSet.ElementAt(0).value;
+                    if (t1 != t2)
+                    {
+                        SemanticErrors.Add("Type mismatch Error At " + tokenSet.ElementAt(0).lineNumber);
+                    }
                     tokenSet.RemoveAt(0);
                     if (tokenSet.ElementAt(0).classKeyword == "(")
                     {
+                        string type = "ctor-";
                         tokenSet.RemoveAt(0);
                         if (First_N_Follow.FirstParams.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowParams.Contains(tokenSet.ElementAt(0).classKeyword))
                         {
-                            status = Params();
+                            status = Params(ref type);
                             if (tokenSet.ElementAt(0).classKeyword == ")" && status)
                             {
                                 tokenSet.RemoveAt(0);
@@ -1546,16 +1609,20 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool Params()
+        bool Params(ref string type)
         {
             bool status = true;
             if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
             {
-                status = Exp();               
+                string t2 = "";
+                status = Exp(ref t2);
+                type += t2;
+                t2 = "";              
                 if(tokenSet.ElementAt(0).classKeyword == ",")
                 {
+                    type += ",";
                     tokenSet.RemoveAt(0);
-                    status = Params();
+                    status = Params(ref type);
                     if (!status)
                     {
                         errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
@@ -1565,7 +1632,7 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool Exp()
+        bool Exp(ref string t1)
         {
             bool status = true;
             if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
@@ -1588,6 +1655,7 @@ namespace LexicalAnalyzer
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "||")
             {
+                opr = "||";
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
@@ -1642,6 +1710,7 @@ namespace LexicalAnalyzer
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "&&")
             {
+                opr = "&&";
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
@@ -1678,6 +1747,7 @@ namespace LexicalAnalyzer
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "RO")
             {
+                opr = tokenSet.ElementAt(0).value;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
@@ -1752,6 +1822,7 @@ namespace LexicalAnalyzer
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "PM")
             {
+                opr = tokenSet.ElementAt(0).value;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
@@ -1792,6 +1863,7 @@ namespace LexicalAnalyzer
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "MDM")
             {
+                opr = tokenSet.ElementAt(0).value;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
@@ -1819,19 +1891,46 @@ namespace LexicalAnalyzer
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
-                tokenSet.RemoveAt(0);
-                if (First_N_Follow.FirstDec_inc.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowDec_inc.Contains(tokenSet.ElementAt(0).classKeyword ))
+                if(opr != "")
                 {
-                    status = DEC_INC();
+                    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, "sementatic error", tokenSet.ElementAt(0).wordNumber));
+                    status = false;
                 }
                 else
                 {
-                    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
-                    status = false;
+                    t1 = tokenSet.ElementAt(0).value;
+                    tokenSet.RemoveAt(0);
+                    if (First_N_Follow.FirstDec_inc.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowDec_inc.Contains(tokenSet.ElementAt(0).classKeyword))
+                    {
+                        status = DEC_INC();
+                    }
+                    else
+                    {
+                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                        status = false;
+                    }
                 }
             }
             else if (First_N_Follow.FirstConst.Contains(tokenSet.ElementAt(0).classKeyword))
             {
+                if (opr == "")
+                {
+                    t1 = tokenSet.ElementAt(0).classKeyword;
+                }
+                else
+                {
+                    t2 = tokenSet.ElementAt(0).classKeyword;
+                    t1 = helpers.Compatible(t1, t2, opr);
+                    if (t1 == "")
+                    {
+                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, "sementatic error", tokenSet.ElementAt(0).wordNumber));
+                        status = false;
+                    }
+                    else
+                    {
+                        t2 = opr = "";
+                    }
+                }
                 tokenSet.RemoveAt(0);
             }
             else if (tokenSet.ElementAt(0).classKeyword == "(")
@@ -2066,7 +2165,7 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool Array_opt()
+        bool Array_opt(ref string paralist)
         {
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "[")
@@ -2074,6 +2173,7 @@ namespace LexicalAnalyzer
                 tokenSet.RemoveAt(0);
                     if (tokenSet.ElementAt(0).classKeyword == "]")
                     {
+                        paralist += "[]";
                         tokenSet.RemoveAt(0);
                     }
                     else
@@ -2084,15 +2184,16 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool List4()
+        bool List4(ref string paralist)
         {
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == ",")
             {
+                paralist += ",";
                 tokenSet.RemoveAt(0);
                 if (tokenSet.ElementAt(0).classKeyword == "DT" || tokenSet.ElementAt(0).classKeyword == "ID")
                 {
-                    status = funct_params();
+                    status = funct_params(ref paralist);
                 }
                 else
                 {
@@ -2107,21 +2208,26 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool funct_params()
+        bool funct_params(ref string paralist)
         {
             bool status = true;
+            string type = "";
             if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
+                type += tokenSet.ElementAt(0).value;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstArrayOpt.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowArrayOpt.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
-                    status = Array_opt();
+                    status = Array_opt(ref type);
                     if (tokenSet.ElementAt(0).classKeyword == "ID" && status)
                     {
+                        helpers.insertFT(tokenSet.ElementAt(0).value, type);
                         tokenSet.RemoveAt(0);
+                        paralist += type;
+                        type = "";
                         if (tokenSet.ElementAt(0).classKeyword == ",")
                         {
-                            status = List4();
+                            status = List4(ref paralist);
                         }
                     }
                     else
@@ -2138,16 +2244,17 @@ namespace LexicalAnalyzer
             }
             else if (tokenSet.ElementAt(0).classKeyword == "DT")
             {
+                paralist += tokenSet.ElementAt(0).value;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstArrayOpt.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
-                    status = Array_opt();
+                    status = Array_opt(ref paralist);
                     if (tokenSet.ElementAt(0).classKeyword == "ID" && status)
                     {
                         tokenSet.RemoveAt(0);
                         if (tokenSet.ElementAt(0).classKeyword == ",")
                         {
-                            status = List4();
+                            status = List4(ref paralist);
                         }
                     }
                     else
@@ -2223,7 +2330,7 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool Ass()
+        bool Ass(string t1)
         {
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "assign")
@@ -2231,7 +2338,7 @@ namespace LexicalAnalyzer
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAss1.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
-                    status = Ass1();
+                    status = Ass1(t1);
                     if (!status)
                     {
                         errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
@@ -2246,12 +2353,12 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool Ass1()
+        bool Ass1(string t1)
         {
             bool status = true;
             if (First_N_Follow.FirstDec2.Contains(tokenSet.ElementAt(0).classKeyword))
             {
-                status = Decl2();
+                status = Decl2(t1);
                 if (tokenSet.ElementAt(0).classKeyword == "ter" && status)
                 {
                     tokenSet.RemoveAt(0);
@@ -2264,20 +2371,23 @@ namespace LexicalAnalyzer
             }
             else if (First_N_Follow.FirstConst.Contains(tokenSet.ElementAt(0).classKeyword))
             {
-                tokenSet.RemoveAt(0);
-                if (tokenSet.ElementAt(0).classKeyword == "ter")
+                if(helpers.Compatible(t1, tokenSet.ElementAt(0).classKeyword, "=") == "")
                 {
-                    tokenSet.RemoveAt(0);
+                    SemanticErrors.Add("type Mismatch");
                 }
                 else
                 {
-                    errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
-                    status = false;
+                    tokenSet.RemoveAt(0);
+                    if (tokenSet.ElementAt(0).classKeyword == "ter")
+                    {
+                        tokenSet.RemoveAt(0);
+                    }
+                    else
+                    {
+                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                        status = false;
+                    }
                 }
-            }
-            else if (tokenSet.ElementAt(0).classKeyword == "[")
-            {
-                status = Decl5();
             }
             else
             {
@@ -2286,11 +2396,12 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool ArrayInit()
+        bool ArrayInit(string t1)
         {
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
+
                 tokenSet.RemoveAt(0);
             }
             else if (tokenSet.ElementAt(0).classKeyword == "[")
@@ -2322,15 +2433,21 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool Decl5()
+        bool Decl5(string am, string type, string name)
         {
             bool status = true;
+            string tm = "";
             if (tokenSet.ElementAt(0).classKeyword == "assign")
             {
-                tokenSet.RemoveAt(0);
-                if (First_N_Follow.FirstArrayInit.Contains(tokenSet.ElementAt(0).classKeyword))
+                if( !helpers.insertCT(name, type, am, tm ,Ref))
                 {
-                    status = ArrayInit();
+                    SemanticErrors.Add("Redeclaration Error At " + tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
+                tokenSet.RemoveAt(0);
+                if (First_N_Follow.FirstArrayInit.Contains(tokenSet.ElementAt(0).classKeyword) && status)
+                {
+                    status = ArrayInit(type);
                     if (tokenSet.ElementAt(0).classKeyword == "ter" && status)
                     {
                         tokenSet.RemoveAt(0);
@@ -2350,6 +2467,11 @@ namespace LexicalAnalyzer
             }
             else if (tokenSet.ElementAt(0).classKeyword == "ter")
             {
+                if (!helpers.insertCT(name, type, am, tm,Ref))
+                {
+                    SemanticErrors.Add("Redeclaration Error At " + tokenSet.ElementAt(0).lineNumber);
+                    status = false;
+                }
                 tokenSet.RemoveAt(0);
             }
             else if (tokenSet.ElementAt(0).classKeyword == "(")
@@ -2357,9 +2479,16 @@ namespace LexicalAnalyzer
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstFunctParams.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowParams.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
-                    status = funct_params();
+                    string paralist = "";
+                    status = funct_params(ref paralist);
+                    type += "-" + paralist;
                     if (tokenSet.ElementAt(0).classKeyword == ")")
                     {
+                        if (!helpers.insertCT(name, type, am, tm, Ref))
+                        {
+                            SemanticErrors.Add("Redeclaration Error At " + tokenSet.ElementAt(0).lineNumber);
+                            status = false;
+                        }
                         tokenSet.RemoveAt(0);
                         if (First_N_Follow.FirstFunction_body.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowFunction_body.Contains(tokenSet.ElementAt(0).classKeyword))
                         {
@@ -2391,15 +2520,23 @@ namespace LexicalAnalyzer
 
             return status;
         }
-        bool Decl6()
+        bool Decl6(ref string type, ref string am)
         {
             bool status = true;
+            string name = "";
+            string tm = "";
             if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
+                name = tokenSet.ElementAt(0).value;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAss.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
-                    status = Ass();
+                    if (!helpers.insertCT(name, type, am, tm ,Ref))
+                    {
+                        SemanticErrors.Add("Redeclaration Error at " + tokenSet.ElementAt(0).lineNumber);
+                        status = false;
+                    }
+                    status = Ass(type);
                     if (!status)
                     {
                         errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
@@ -2412,10 +2549,12 @@ namespace LexicalAnalyzer
                         if (tokenSet.ElementAt(0).classKeyword == "]")
                         {
                             tokenSet.RemoveAt(0);
+                            type += "[]";
                             if (tokenSet.ElementAt(0).classKeyword == "ID")
                             {
+                                name = tokenSet.ElementAt(0).value;
                                 tokenSet.RemoveAt(0);
-                                status = Decl5();
+                                status = Decl5(am, type, name);
                             }
                             else
                             {
@@ -2431,11 +2570,11 @@ namespace LexicalAnalyzer
                 }
                 else if (First_N_Follow.FirstList.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
-                    status = List();
+                    status = List(am, type, name);
                 }
                 else if (First_N_Follow.FirstDec5.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
-                    status = Decl5();
+                    status = Decl5(am, type, name);
                 }
                 else
                 {
@@ -2449,12 +2588,14 @@ namespace LexicalAnalyzer
                 if (tokenSet.ElementAt(0).classKeyword == "]")
                 {
                     tokenSet.RemoveAt(0);
+                    type += "[]";
                     if (tokenSet.ElementAt(0).classKeyword == "ID")
                     {
+                        name = tokenSet.ElementAt(0).value;
                         tokenSet.RemoveAt(0);
                         if (First_N_Follow.FirstDec5.Contains(tokenSet.ElementAt(0).classKeyword))
                         {
-                            status = Decl5();
+                            status = Decl5(am, type, name);
                         }
                         else
                         {
@@ -2481,15 +2622,19 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool Decl()
+        bool Decl(ref string am)
         {
             bool status = true;
+            string type = "";
+            string name = "";
+            string tm = "";
             if (tokenSet.ElementAt(0).classKeyword == "DT") 
             {
+                type = tokenSet.ElementAt(0).value;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstDecl6.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
-                    status = Decl6();
+                    status = Decl6(ref type, ref am);
                 }
                 else
                 {
@@ -2499,22 +2644,32 @@ namespace LexicalAnalyzer
             }
             else if (tokenSet.ElementAt(0).classKeyword == "abstract")
             {
+                tm = "abstract";
                 tokenSet.RemoveAt(0);
                 if (tokenSet.ElementAt(0).classKeyword == "DT")
                 {
+                    type = tokenSet.ElementAt(0).value;
                     tokenSet.RemoveAt(0);
                     if (tokenSet.ElementAt(0).classKeyword == "ID")
                     {
+                        name = tokenSet.ElementAt(0).value;
                         tokenSet.RemoveAt(0);
                         if (tokenSet.ElementAt(0).classKeyword == "(")
                         {
                             tokenSet.RemoveAt(0);
                             if (First_N_Follow.FirstFunctParams.Contains(tokenSet.ElementAt(0).classKeyword))
                             {
-                                status = funct_params();
+                                string paralist = "";
+                                helpers.createScope();
+                                status = funct_params(ref paralist);
+                                type += "-" + paralist;
                                 if (tokenSet.ElementAt(0).classKeyword == ")" && status)
                                 {
                                     tokenSet.RemoveAt(0);
+                                    if(!helpers.insertCT(name, type, am, tm, Ref))
+                                    {
+                                        SemanticErrors.Add("Redeclaration Error At " + tokenSet.ElementAt(0).lineNumber);
+                                    }
                                     if (First_N_Follow.FirstFunction_body.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowFunction_body.Contains(tokenSet.ElementAt(0).classKeyword))
                                     {
                                         status = FunctionBody();
@@ -2562,13 +2717,20 @@ namespace LexicalAnalyzer
             }
             else if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
+                tm = "";
+                type = tokenSet.ElementAt(0).value;
                 tokenSet.RemoveAt(0);
-              if (tokenSet.ElementAt(0).classKeyword == "ID")
+                if (tokenSet.ElementAt(0).classKeyword == "ID")
                 {
+                    name = tokenSet.ElementAt(0).value;
                     tokenSet.RemoveAt(0);
                     if (First_N_Follow.FirstAss.Contains(tokenSet.ElementAt(0).classKeyword))
                     {
-                        status = Ass();
+                        if(!helpers.insertCT(name, type, am, tm, Ref))
+                        {
+                            SemanticErrors.Add("Redeclaration Error At " + tokenSet.ElementAt(0).lineNumber);
+                        }
+                        status = Ass(type);
                         if (!status)
                         {
                             errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
@@ -2580,11 +2742,18 @@ namespace LexicalAnalyzer
                         tokenSet.RemoveAt(0);
                         if (First_N_Follow.FirstFunctParams.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowParams.Contains(tokenSet.ElementAt(0).classKeyword))
                         {
-                            status = funct_params();
+                            string paralist = "";
+                            status = funct_params(ref paralist);
+                            type += "-" + paralist;
                             if (tokenSet.ElementAt(0).classKeyword == ")" && status)
                             {
+                                if(!helpers.insertCT(name, type, am, tm, Ref))
+                                {
+                                    SemanticErrors.Add("Redeclaration Error At " + tokenSet.ElementAt(0).lineNumber);
+                                    status = false;
+                                }
                                 tokenSet.RemoveAt(0);
-                                if (First_N_Follow.FirstFunction_body.Contains(tokenSet.ElementAt(0).classKeyword))
+                                if (First_N_Follow.FirstFunction_body.Contains(tokenSet.ElementAt(0).classKeyword) && status)
                                 {
                                     status = FunctionBody();
                                 }
@@ -2614,12 +2783,21 @@ namespace LexicalAnalyzer
                 }
                 else if (tokenSet.ElementAt(0).classKeyword == "(")
                 {
+                    name = type;
+                    type = "ctor";
                     tokenSet.RemoveAt(0);
                     if (First_N_Follow.FirstFunctParams.Contains(tokenSet.ElementAt(0).classKeyword) || tokenSet.ElementAt(0).classKeyword==")")
                     {
-                        status = funct_params();
+                        string paralist = "";
+                        status = funct_params(ref paralist);
+                        type += "-" + paralist;
                         if (tokenSet.ElementAt(0).classKeyword == ")")
                         {
+                            if (!helpers.insertCT(name, type, am, tm, Ref))
+                            {
+                                SemanticErrors.Add("Redeclaration Error At " + tokenSet.ElementAt(0).lineNumber);
+                                status = false;
+                            }
                             tokenSet.RemoveAt(0);
                             if (First_N_Follow.FirstFunction_body.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowFunction_body.Contains(tokenSet.ElementAt(0).classKeyword))
                             {
@@ -2649,12 +2827,14 @@ namespace LexicalAnalyzer
                     if (tokenSet.ElementAt(0).classKeyword == "]")
                     {
                         tokenSet.RemoveAt(0);
+                        type += "[]";
                         if (tokenSet.ElementAt(0).classKeyword == "ID")
                         {
+                            name = tokenSet.ElementAt(0).value;
                             tokenSet.RemoveAt(0);
                             if (First_N_Follow.FirstDec5.Contains(tokenSet.ElementAt(0).classKeyword))
                             {
-                                status = Decl5();
+                                status = Decl5(am,type,name);
                             }
                             else
                             {
@@ -2690,12 +2870,13 @@ namespace LexicalAnalyzer
         bool Decl_Init()
         {
             bool status = true;
+            string am = "private";
             if (First_N_Follow.FirstAM.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowAM.Contains(tokenSet.ElementAt(0).classKeyword))
             {
-                status = AM();
+                status = AM(ref am);
                 if (First_N_Follow.FirstDecl.Contains(tokenSet.ElementAt(0).classKeyword) && status)
                 {
-                    status = Decl();
+                    status = Decl(ref am);
                 }
                 else
                 {
@@ -2772,7 +2953,7 @@ namespace LexicalAnalyzer
         }
 
 
-        bool Extend()
+        bool Extend(ref string parent)
         {
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "extend")
@@ -2780,6 +2961,7 @@ namespace LexicalAnalyzer
                 tokenSet.RemoveAt(0);
                 if (tokenSet.ElementAt(0).classKeyword == "ID")
                 {
+                    parent = tokenSet.ElementAt(0).value;
                     tokenSet.RemoveAt(0);
                 }
                 else
@@ -2790,19 +2972,24 @@ namespace LexicalAnalyzer
             }
             return status;
         }
-        bool Abstract_Class()
+        bool Abstract_Class(ref string category)
         {
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "abstract")
+            {
+                category = "abstract";
                 tokenSet.RemoveAt(0);
-
+            }
             return status;
         }
-        bool Sealed()
+        bool Sealed(ref string category)
         {
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "sealed")
+            {
+                category = "sealed";
                 tokenSet.RemoveAt(0);
+            }                
             return status;
         }
     }

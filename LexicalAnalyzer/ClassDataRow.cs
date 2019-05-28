@@ -11,11 +11,13 @@ namespace LexicalAnalyzer
         public string Name;
         public string Type;
         public string AM;
-        public ClassDataRow(string name, string type, string am)
+        public string TM;
+        public ClassDataRow(string name, string type, string am, string tm)
         {
             Name = name;
             Type = type;
             AM = am;
+            TM = tm;
         }
     }
 }

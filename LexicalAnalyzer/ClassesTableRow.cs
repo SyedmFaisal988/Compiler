@@ -11,12 +11,14 @@ namespace LexicalAnalyzer
         public string Name;
         public string Type;
         public string Parent;
+        public string Category;
         public ClassData Link;
-        public ClassesTableRow(string name, string type, string parent)
+        public ClassesTableRow(string name, string type, string category, string parent)
         {
             Name = name;
             Type = type;
             Parent = parent;
+            category = Category;
             Link = new ClassData();
         }
     }

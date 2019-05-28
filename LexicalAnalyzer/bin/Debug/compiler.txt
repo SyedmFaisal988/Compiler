@@ -1,45 +1,5 @@
-class hey extend hey{ 
-    string[] h = [4];
-    int[] h;
-    int a,b=10;
-    public int main( int[] a){
-        string h = "hello";
-        do{
-            char a = 'a';
-        }
-        while(t<3);
-        if(a){
-        	string b;
-        }
-        else{
-        	int a;
-        }
-        while(5%t<3){
-            hdy();
-            int[] d = d;
-        }
-        for(t=0 ; t<1;i++){
-            int ad = b+c;
-            hf d = hf();
-            ft tv = (hr().a + gt() + at().f[3].t);
-        }
-
-switch(3){
-    case 4: int a=4; break;
-    default : int b; break;
-}       hh hd = new hh(ad, 3);
-       hh(3+ 2);
-       return d[2];
-    }
-}
 class hey{
-    void hh(){
-    bh.b = 'a'; 
-    int[] d = d;
-    hd[] k;
-    a.b.k.j = a.b[3].c[6].d.f();
-  }
-  public hey(){
-    int a;
-  }
+    public void main(){
+	int a = 3 + 3;
+    }
 }
