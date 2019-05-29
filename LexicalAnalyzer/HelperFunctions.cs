@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LexicalAnalyzer
@@ -186,9 +186,17 @@ namespace LexicalAnalyzer
         }
         public bool insertFT(string name, string type)
         {
-            foreach(var funcData in FunctionTable)
+            if (type == "int" || type == "float" || type == "char" || type == "string")
             {
-                if (funcData.Name == name && funcData.Scope != currentScope)
+                Regex rg = new Regex("_const$");
+                if (!rg.IsMatch(type))
+                {
+                    type += "_const";
+                }
+            }
+            foreach (var funcData in FunctionTable)
+            {
+                if (funcData.Name == name && funcData.Scope == currentScope)
                     return false;
             }
             FunctionTable.Add(new FunctionTableRow(name, type, currentScope));

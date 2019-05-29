@@ -1,7 +1,9 @@
 class hey{ 
-    int[] h = [4];
-    int a,b = 10;
-    public int main( int[] a){
+    int hellow(int c){
+    int b = 10;
+    }
+    public int main(int a){
         string h = "hello";
+        int bd = hellow(a);
         }
 }

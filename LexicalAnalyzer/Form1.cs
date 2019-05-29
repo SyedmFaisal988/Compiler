@@ -420,16 +420,17 @@ namespace LexicalAnalyzer
             string mess = "";
             foreach(var table in PT.helpers.FunctionTable)
             {
-                mess += table.Name + ", " + table.Scope + ", " + table.Type + "\n";
+                mess +="Name: "+ table.Name + ", Scope " + table.Scope + ", Type: " + table.Type + "\n";
             }
             MessageBox.Show(mess,"Function table");
             mess = "";
             foreach(var table in PT.helpers.ClassesTable)
             {
+                mess += "--------New Class------------\n";
                 mess +="Name: "+ table.Name + ", Type: " + table.Type + ", Category: " + table.Category + ", Parent: " + table.Parent +"\n";
                 foreach(var tb in table.Link.classData)
                 {
-                    mess += "Name: " + tb.Name + ", Tm" + tb.TM + ", Am: " + tb.AM + ", Type: " + tb.Type + "\n";
+                    mess += "Name: " + tb.Name + ", Tm " + tb.TM + ", Am: " + tb.AM + ", Type: " + tb.Type + "\n";
                 }
                 mess += "\n";
             }

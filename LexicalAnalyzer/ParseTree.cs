@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LexicalAnalyzer
@@ -993,6 +993,8 @@ namespace LexicalAnalyzer
                             {
                                 string t2 = "";
                                 status = Exp(ref t2);
+                                string[] temp = t2.Split('-');
+                                t2 = temp[0];
                                 type += "_const";
                                 if(type != t2)
                                 {
@@ -1680,7 +1682,15 @@ namespace LexicalAnalyzer
             {
                 string t2 = "";
                 status = Exp(ref t2);
-                type += t2;
+                Regex rg = new Regex("_const$");
+                if (rg.IsMatch(t2))
+                {
+                    type += t2;
+                }
+                else
+                {
+                    type += t2 + "_const"; //ye change kiya ha 
+                }
                 t2 = "";              
                 if(tokenSet.ElementAt(0).classKeyword == ",")
                 {
@@ -2211,11 +2221,11 @@ namespace LexicalAnalyzer
                 {
                     string paralist = "ctor-";
                     status = Params(ref paralist);
-                    if(type != paralist)
-                    {
-                         SemanticErrors.Add("Use of Undeclared variable At " + tokenSet.ElementAt(0).lineNumber);
-                         return false;
-                    }
+                    //if(type != paralist)
+                    //{
+                    //     SemanticErrors.Add("Use of Undeclared variable At " + tokenSet.ElementAt(0).lineNumber);
+                    //     return false;
+                    //}
                     t1 = type;
                     if (tokenSet.ElementAt(0).classKeyword == ")")
                     {
@@ -2264,6 +2274,10 @@ namespace LexicalAnalyzer
                     errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
+            }
+            else
+            {
+                t1 = helpers.lookupFT(t1, ClassName);
             }
             return status;
         }
@@ -2642,6 +2656,14 @@ namespace LexicalAnalyzer
                     string paralist = "";
                     helpers.createScope();
                     status = funct_params(ref paralist);
+                    if (type == "int" || type == "float" || type == "char" || type == "string")
+                    {
+                        Regex rg = new Regex("_const$");
+                        if (!rg.IsMatch(type))
+                        {
+                            type += "_const";
+                        }
+                    }
                     type += "-" + paralist;
                     if (tokenSet.ElementAt(0).classKeyword == ")")
                     {
@@ -2822,6 +2844,14 @@ namespace LexicalAnalyzer
                             {
                                 string paralist = "";
                                 helpers.createScope();
+                                if (type == "int" || type == "float" || type == "char" || type == "string")
+                                {
+                                    Regex rg = new Regex("_const$");
+                                    if (!rg.IsMatch(type))
+                                    {
+                                        type += "_const";
+                                    }
+                                }
                                 status = funct_params(ref paralist);
                                 type += "-" + paralist;
                                 if (tokenSet.ElementAt(0).classKeyword == ")" && status)
@@ -2905,6 +2935,14 @@ namespace LexicalAnalyzer
                         {
                             string paralist = "";
                             helpers.createScope();
+                            if (type == "int" || type == "float" || type == "char" || type == "string")
+                            {
+                                Regex rg = new Regex("_const$");
+                                if (!rg.IsMatch(type))
+                                {
+                                    type += "_const";
+                                }
+                            }
                             status = funct_params(ref paralist);
                             type += "-" + paralist;
                             if (tokenSet.ElementAt(0).classKeyword == ")" && status)
@@ -2952,6 +2990,14 @@ namespace LexicalAnalyzer
                     {
                         string paralist = "";
                         helpers.createScope();
+                        if (type == "int" || type == "float" || type == "char" || type == "string")
+                        {
+                            Regex rg = new Regex("_const$");
+                            if (!rg.IsMatch(type))
+                            {
+                                type += "_const";
+                            }
+                        }
                         status = funct_params(ref paralist);
                         type += "-" + paralist;
                         if (tokenSet.ElementAt(0).classKeyword == ")")
