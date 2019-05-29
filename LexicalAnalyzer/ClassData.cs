@@ -8,7 +8,7 @@ namespace LexicalAnalyzer
 {
     class ClassData
     {
-        List<ClassDataRow> classData;
+        public List<ClassDataRow> classData;
         public ClassData()
         {
             classData = new List<ClassDataRow>();

@@ -415,9 +415,25 @@ namespace LexicalAnalyzer
             List<string> SemanticErrors = PT.SemanticErrors;
             foreach(var error in SemanticErrors)
             {
-                MessageBox.Show(error);
+                MessageBox.Show(error, "Semantic Errors");
             }
-
+            string mess = "";
+            foreach(var table in PT.helpers.FunctionTable)
+            {
+                mess += table.Name + ", " + table.Scope + ", " + table.Type + "\n";
+            }
+            MessageBox.Show(mess,"Function table");
+            mess = "";
+            foreach(var table in PT.helpers.ClassesTable)
+            {
+                mess +="Name: "+ table.Name + ", Type: " + table.Type + ", Category: " + table.Category + ", Parent: " + table.Parent +"\n";
+                foreach(var tb in table.Link.classData)
+                {
+                    mess += "Name: " + tb.Name + ", Tm" + tb.TM + ", Am: " + tb.AM + ", Type: " + tb.Type + "\n";
+                }
+                mess += "\n";
+            }
+            MessageBox.Show(mess, "Class Table");
         }
         public bool regexCheck(dynamic keyword, int type)
         {

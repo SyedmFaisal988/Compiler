@@ -8,14 +8,15 @@ namespace LexicalAnalyzer
 {
     class HelperFunctions
     {
-        List<ClassesTableRow> ClassesTable;
-        List<FunctionTableRow> FunctionTable;
+        public List<ClassesTableRow> ClassesTable;
+        public List<FunctionTableRow> FunctionTable;
         Stack<int> ScopeHirarchy;
         ClassData currentRef;
         int currentScope;
         int scopeCount;
         string[,] compatible = {
             { "int_const", "int_const", "=", "int_const" },
+            { "int", "int_const", "=", "int_const"},
             { "float_const", "int_const", "=", "float_const" },
             { "float_const", "float_const", "=", "float_const" },
             { "char_const", "char_const", "=", "char_const" },
@@ -174,6 +175,7 @@ namespace LexicalAnalyzer
             if (result == "")
             {
                 status = new ClassesTableRow(name, type, category, parent);
+                ClassesTable.Add(status);
                 return status.Link;
             }
             return status.Link;
