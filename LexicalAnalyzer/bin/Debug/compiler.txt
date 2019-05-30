@@ -5,5 +5,17 @@ class hey{
     public int main(int a){
         string h = "hello";
         int bd = hellow(a);
+        while(5<3){
+            int[] d;
         }
+    }
+    public hey(){
+        char kk;
+    }
+}
+class hh{
+    public void main(){
+        int a = 10;
+        hey g = new hey();
+    }
 }

@@ -857,16 +857,24 @@ namespace LexicalAnalyzer
                                         tokenSet.RemoveAt(0);
                                         if (First_N_Follow.FirstParams.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowParams.Contains(tokenSet.ElementAt(0).classKeyword))
                                         {
-                                            string paralist = "";
+                                            string paralist = "ctor-";
                                             status = Params(ref paralist);
-                                            type += "-" + paralist;
+                                            type = paralist;
                                             if (tokenSet.ElementAt(0).classKeyword == ")")
                                             {
-                                               if (helpers.lookupCT(t2, Ref) == null)
+                                               ClassData calledClass = helpers.getClassRef(t2);
+                                                if (calledClass == null)
+                                                {
+                                                    SemanticErrors.Add("Constructor not found At " + tokenSet.ElementAt(0).lineNumber);
+                                                    return false;
+                                                }
+                                                string calledClassType = helpers.lookupCT(t2, calledClass).Type;
+                                               if (type!=calledClassType)
                                                 {
                                                     SemanticErrors.Add("Use of Undeclared Variable At " + tokenSet.ElementAt(0).lineNumber);
                                                     return false;
                                                 }
+
                                                 tokenSet.RemoveAt(0);
                                                 if (tokenSet.ElementAt(0).classKeyword == "ter")
                                                 {

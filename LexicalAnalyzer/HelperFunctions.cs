@@ -136,6 +136,16 @@ namespace LexicalAnalyzer
             }
             return type;
         }
+        public ClassData getClassRef(string name)
+        {
+            ClassData type = null;
+            foreach (ClassesTableRow temp in ClassesTable)
+            {
+                if (temp.Name == name)
+                    type = temp.Link;
+            }
+            return type;
+        }
         public ClassDataRow lookupCT(string name, ClassData Ref )
         {
             return Ref.getRow(name);
