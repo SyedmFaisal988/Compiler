@@ -435,6 +435,7 @@ namespace LexicalAnalyzer
                 mess += "\n";
             }
             MessageBox.Show(mess, "Class Table");
+            MessageBox.Show(PT.helpers.IC);
         }
         public bool regexCheck(dynamic keyword, int type)
         {

@@ -14,6 +14,9 @@ namespace LexicalAnalyzer
         ClassData currentRef;
         int currentScope;
         int scopeCount;
+        int labelIndex;
+        int tempIndex;
+        public string IC = "Intermediate Code:\n";
         string[,] compatible = {
             { "int_const", "int_const", "=", "int_const" },
             { "int", "int_const", "=", "int_const"},
@@ -125,6 +128,7 @@ namespace LexicalAnalyzer
             currentScope = -1;
             scopeCount = 0;
             currentRef = new ClassData();
+            labelIndex = tempIndex = 0;
         }
         public string lookup(string name) 
         {
@@ -234,6 +238,18 @@ namespace LexicalAnalyzer
                     type = compatible[i, 3];
             }
             return type;
+        }
+        public string createLabel()
+        {
+            return "L" + labelIndex++;
+        }
+        public string createTemp()
+        {
+            return "t" + tempIndex++;
+        }
+        public void genIC(string code)
+        {
+            IC += code + "\n";
         }
     }
 }
