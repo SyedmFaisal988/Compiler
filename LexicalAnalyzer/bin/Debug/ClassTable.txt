@@ -1,0 +1,16 @@
+--------New Class------------
+Name: hey, Type: class, Category: , Parent: 
+Name: hellow, Tm general, Am: private, Type: int_const-int_const
+Name: abs, Tm abstract, Am: public, Type: void-
+Name: main, Tm general, Am: public, Type: int_const-int_const
+Name: hey, Tm general, Am: public, Type: ctor-
+
+--------New Class------------
+Name: hh, Type: class, Category: , Parent: 
+Name: a, Tm general, Am: private, Type: int
+Name: main, Tm general, Am: public, Type: void-
+
+--------New Class------------
+Name: heloo, Type: class, Category: , Parent: hey
+Name: main, Tm general, Am: public, Type: void-
+

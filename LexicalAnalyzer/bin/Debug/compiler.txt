@@ -2,6 +2,7 @@ class hey{
     int hellow(int c){
     int b = 10;
     }
+    public void abs();
     public int main(int a){
         string h = "hello";
         int bd = hellow(a);
@@ -14,8 +15,17 @@ class hey{
     }
 }
 class hh{
+	int a = 50;	
     public void main(){
         int a = 10;
         hey g = new hey();
+	g.main(a);
+	this.a = 10;
+    }
+}
+class heloo extend hey{
+    public void main(){
+        string b = "Hello";
+	base.hellow(10);
     }
 }

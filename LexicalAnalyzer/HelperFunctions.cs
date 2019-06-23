@@ -150,6 +150,30 @@ namespace LexicalAnalyzer
             }
             return type;
         }
+        public string lookupCTExternal(string className, string varName)
+        {
+            string type = null; 
+            foreach(var classs in ClassesTable)
+            {
+                if(classs.Name == className)
+                {
+                    type = classs.Type;
+                }
+            }
+            return type;
+        }
+        public string lookupParent(string className)
+        {
+            string type = null;
+            foreach(var classs in ClassesTable)
+            {
+                if(classs.Name == className)
+                {
+                    type = classs.Parent;
+                }
+            }
+            return type;
+        }
         public ClassDataRow lookupCT(string name, ClassData Ref )
         {
             return Ref.getRow(name);

@@ -59,7 +59,7 @@ namespace LexicalAnalyzer
         public static string[] FollowR1 = new string[] { "}" };
         public static string[] FirstConst = new string[] { "int_const", "float_const", "string_const", "char_const" };
         public static string[] FirstCond3_1 = new string[] { "assign", "compAss" };
-        public static string[] FirstAssignCall = new string[] { "ID", "DT" };
+        public static string[] FirstAssignCall = new string[] { "ID", "DT", "this", "base" };
         public static string[] FollowCond3_1 = new string[] { ")" };
         public static string[] FollowAssignList = new string[] { "(", "assign", "compAss" };
         public static string[] FirstInitList = new string[] { "assign" };
@@ -89,7 +89,8 @@ namespace LexicalAnalyzer
         public static string[] FirstDecl6 = new string[] { "ID", "[" };
         public static string[] FirstIf_else_stmt = new string[] { "if" };
         public static string[] FirstSwitch_stmt = new string[] { "switch" };
-        public static string[] FirstSST = new string[] { "for", "while", "do", "if", "switch", "AM", "AM", "DT", "ID", "abstract", "return", "break", "continue", "ID" };
-        public static string[] FirstMST = new string[] { "for", "while", "do", "if", "switch", "AM", "AM", "DT", "ID", "abstract", "return", "break", "continue", "ID" };
+        public static string[] FirstSST = new string[] { "for", "while", "do", "if", "switch", "AM", "AM", "DT", "ID", "abstract", "return", "break", "continue", "ID" ,"this", "base"};
+        public static string[] FirstMST = new string[] { "for", "while", "do", "if", "switch", "AM", "AM", "DT", "ID", "abstract", "return", "break", "continue", "ID" ,"this", "base"};
+        
     }
 }

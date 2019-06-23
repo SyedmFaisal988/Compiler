@@ -398,6 +398,7 @@ namespace LexicalAnalyzer
             List<ParseError> ParseError = PT.Parse();
             //List<ParseError> ParseError = ParseErrorRaw.Distinct().ToList();
             string err = "";
+            
             ParseError Previous = new ParseError(0, "", 0);
             foreach( ParseError error in ParseError)
             {
@@ -418,13 +419,17 @@ namespace LexicalAnalyzer
                 MessageBox.Show(error, "Semantic Errors");
             }
             string mess = "";
-            foreach(var table in PT.helpers.FunctionTable)
+            sw = new System.IO.StreamWriter("Function.txt");
+            foreach (var table in PT.helpers.FunctionTable)
             {
                 mess +="Name: "+ table.Name + ", Scope " + table.Scope + ", Type: " + table.Type + "\n";
             }
             MessageBox.Show(mess,"Function table");
+            sw.WriteAsync(mess);
+            sw.Close();
             mess = "";
-            foreach(var table in PT.helpers.ClassesTable)
+            sw = new System.IO.StreamWriter("ClassTable.txt");
+            foreach (var table in PT.helpers.ClassesTable)
             {
                 mess += "--------New Class------------\n";
                 mess +="Name: "+ table.Name + ", Type: " + table.Type + ", Category: " + table.Category + ", Parent: " + table.Parent +"\n";
@@ -435,6 +440,16 @@ namespace LexicalAnalyzer
                 mess += "\n";
             }
             MessageBox.Show(mess, "Class Table");
+            sw.WriteAsync(mess);
+            sw.Close();
+            mess = "";
+            foreach(var classs in PT.helpers.ClassesTable)
+            {
+                mess += "Name: " + classs.Name + " Parent: " + classs.Parent + " Category: " + classs.Category + " Type: " + classs.Type + " \n";
+            }
+            sw = new System.IO.StreamWriter("Classes.txt");
+            sw.Write(mess);
+            sw.Close();
             MessageBox.Show(PT.helpers.IC);
         }
         public bool regexCheck(dynamic keyword, int type)
