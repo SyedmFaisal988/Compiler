@@ -1,5 +1,6 @@
 --------New Class------------
-Name: hey, Type: class, Category: , Parent: 
+Name: hey, Type: class, Category: abstract, Parent: 
+Name: h, Tm general, Am: private, Type: string
 Name: hellow, Tm general, Am: private, Type: int_const-int_const
 Name: abs, Tm abstract, Am: public, Type: void-
 Name: main, Tm general, Am: public, Type: int_const-int_const
@@ -8,6 +9,7 @@ Name: hey, Tm general, Am: public, Type: ctor-
 --------New Class------------
 Name: hh, Type: class, Category: , Parent: 
 Name: a, Tm general, Am: private, Type: int
+Name: hehh, Tm general, Am: private, Type: hey[]
 Name: main, Tm general, Am: public, Type: void-
 
 --------New Class------------

@@ -145,10 +145,20 @@ namespace LexicalAnalyzer
             ClassData type = null;
             foreach (ClassesTableRow temp in ClassesTable)
             {
-                if (temp.Name == name)
+                if (temp.Name == name && temp.Category!="abstract")
                     type = temp.Link;
             }
             return type;
+        }
+        public void markClassAbstract(string className)
+        {
+            foreach (var classs in ClassesTable)
+            {
+                if (classs.Name == className)
+                {
+                    classs.Category = "abstract";
+                }
+            }
         }
         public string lookupCTExternal(string className, string varName)
         {

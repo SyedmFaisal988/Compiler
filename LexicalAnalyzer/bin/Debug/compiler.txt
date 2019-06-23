@@ -1,4 +1,5 @@
 class hey{ 
+    string h = "he";
     int hellow(int c){
     int b = 10;
     }
@@ -17,9 +18,9 @@ class hey{
 class hh{
 	int a = 50;	
     public void main(){
-        int a = 10;
-        hey g = new hey();
-	g.main(a);
+        int a = this.a;
+        //hey g = new hey();
+	//g.main(a);
 	this.a = 10;
     }
 }

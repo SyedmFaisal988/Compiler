@@ -1,10 +1,9 @@
 Name: c, Scope 0, Type: int_const
-Name: b, Scope 0, Type: int_const
+Name: b, Scope 0, Type: int[]
 Name: a, Scope 2, Type: int_const
 Name: h, Scope 2, Type: string_const
 Name: bd, Scope 2, Type: int_const
 Name: d, Scope 2, Type: int[]
 Name: kk, Scope 3, Type: char_const
 Name: a, Scope 4, Type: int_const
-Name: g, Scope 4, Type: hey
 Name: b, Scope 5, Type: string_const

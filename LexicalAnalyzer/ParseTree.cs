@@ -941,6 +941,15 @@ namespace LexicalAnalyzer
                                     status = false;
                                 }
                             }
+                            else if (tokenSet.ElementAt(0).classKeyword == "[")
+                            {
+                                status = ArrayInit(type);
+                                if (!status)
+                                {
+                                    SemanticErrors.Add("Type mismatch");
+                                    return false;
+                                }
+                            }
                             else if (tokenSet.ElementAt(0).classKeyword == "ID")  //ye add kiya ha function call
                             {
                                 if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
@@ -1089,6 +1098,22 @@ namespace LexicalAnalyzer
                                 {
                                     errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                                     status = false;
+                                }
+                            }
+                            else if (tokenSet.ElementAt(0).classKeyword == "[")
+                            {
+                                status = ArrayInit(type);
+                                if (!status)
+                                {
+                                    SemanticErrors.Add("Type mismatch");
+                                    return false;
+                                }
+                                else
+                                {
+                                    if (tokenSet.ElementAt(0).classKeyword == "ter")
+                                    {
+                                        tokenSet.RemoveAt(0);
+                                    }
                                 }
                             }
                             else
@@ -2036,6 +2061,12 @@ namespace LexicalAnalyzer
         bool F(ref string t1)
         {
             bool status = true;
+            if (tokenSet.ElementAt(0).classKeyword == "this")
+            {
+                tokenSet.RemoveAt(0);
+                t1 = ClassName;
+                status = DEC_INC(ref t1);
+            }
             if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
                 if(opr != "")
@@ -2127,6 +2158,10 @@ namespace LexicalAnalyzer
                     errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                     status = false;
                 }
+            }
+            else if (tokenSet.ElementAt(0).classKeyword == "ter")
+            {
+                //do nothing
             }
             else
             {
@@ -2349,7 +2384,8 @@ namespace LexicalAnalyzer
             }
             else
             {
-                t1 = helpers.lookupFT(t1, ClassName);
+                if(t1=="")
+                    t1 = helpers.lookupFT(t1, ClassName);
             }
             return status;
         }
@@ -2511,6 +2547,7 @@ namespace LexicalAnalyzer
             if (tokenSet.ElementAt(0).classKeyword == "ter")
             {
                 tm = "abstract";
+                helpers.markClassAbstract(ClassName);
                 tokenSet.RemoveAt(0);
             }
             else if (tokenSet.ElementAt(0).classKeyword == "{")
@@ -2606,7 +2643,15 @@ namespace LexicalAnalyzer
             }
             else if (First_N_Follow.FirstConst.Contains(tokenSet.ElementAt(0).classKeyword))
             {
-                if(helpers.Compatible(t1, tokenSet.ElementAt(0).classKeyword, "=") == "")
+                if (t1 == "int" || t1 == "float" || t1 == "char" || t1 == "string")
+                {
+                    Regex rg = new Regex("_const$");
+                    if (!rg.IsMatch(t1))
+                    {
+                        t1 += "_const";
+                    }
+                }
+                if (helpers.Compatible(t1, tokenSet.ElementAt(0).classKeyword, "=") == "")
                 {
                     SemanticErrors.Add("type Mismatch");
                 }
