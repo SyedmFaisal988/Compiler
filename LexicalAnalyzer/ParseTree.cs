@@ -15,6 +15,10 @@ namespace LexicalAnalyzer
         public HelperFunctions helpers;
         public List<string> SemanticErrors;
         ClassData Ref;
+
+        //IC Variables
+        private string currentClass, currentFunction, paramList, procName;
+
         public ParseTree()
         {
             tokenSet = new List<Token>(StaticComponents.tokenSet.Count);
@@ -84,6 +88,7 @@ namespace LexicalAnalyzer
                         if (tokenSet.ElementAt(0).classKeyword == "ID")
                         {
                             name = tokenSet.ElementAt(0).value;
+                            currentClass = name;
                             ClassName = name;
                             tokenSet.RemoveAt(0);
                             status = Extend(ref parent);
@@ -2774,6 +2779,10 @@ namespace LexicalAnalyzer
                     string paralist = "";
                     helpers.createScope();
                     status = funct_params(ref paralist);
+                    paramList = paralist;
+                    currentFunction = name;
+                    procName = currentClass + "-" + currentFunction + "-" + paramList;
+                    helpers.genIC(procName + " proc");
                     if (type == "int" || type == "float" || type == "char" || type == "string")
                     {
                         Regex rg = new Regex("_const$");
@@ -2959,6 +2968,7 @@ namespace LexicalAnalyzer
                     if (tokenSet.ElementAt(0).classKeyword == "ID")
                     {
                         name = tokenSet.ElementAt(0).value;
+                        currentFunction = name;
                         tokenSet.RemoveAt(0);
                         if (tokenSet.ElementAt(0).classKeyword == "(")
                         {
@@ -2976,6 +2986,9 @@ namespace LexicalAnalyzer
                                     }
                                 }
                                 status = funct_params(ref paralist);
+                                paramList = paralist;
+                                procName = currentClass + "-" + currentFunction + "-" + paramList;
+                                helpers.genIC(procName + " proc");
                                 type += "-" + paralist;
                                 if (tokenSet.ElementAt(0).classKeyword == ")" && status)
                                 {
@@ -3072,6 +3085,10 @@ namespace LexicalAnalyzer
                                 }
                             }
                             status = funct_params(ref paralist);
+                            paramList = paralist;
+                            currentFunction = name;
+                            procName = currentClass + "-" + currentFunction + "-" + paramList;
+                            helpers.genIC(procName + " proc");
                             type += "-" + paralist;
                             if (tokenSet.ElementAt(0).classKeyword == ")" && status)
                             {
@@ -3110,7 +3127,7 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(helpers.genIC(procName);0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }
@@ -3132,6 +3149,10 @@ namespace LexicalAnalyzer
                             }
                         }
                         status = funct_params(ref paralist);
+                        paramList = paralist;
+                        currentFunction = name;
+                        procName = currentClass + "-" + currentFunction + "-" + paramList;
+                        helpers.genIC(procName + " proc");
                         type += "-" + paralist;
                         if (tokenSet.ElementAt(0).classKeyword == ")")
                         {

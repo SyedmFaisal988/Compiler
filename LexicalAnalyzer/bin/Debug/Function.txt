@@ -1,5 +1,5 @@
 Name: c, Scope 0, Type: int_const
-Name: b, Scope 0, Type: int[]
+Name: b, Scope 0, Type: int_const
 Name: a, Scope 2, Type: int_const
 Name: h, Scope 2, Type: string_const
 Name: bd, Scope 2, Type: int_const
