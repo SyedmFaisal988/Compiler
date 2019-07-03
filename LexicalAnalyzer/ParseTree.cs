@@ -17,7 +17,8 @@ namespace LexicalAnalyzer
         ClassData Ref;
 
         //IC Variables
-        private string currentClass, currentFunction, paramList, procName;
+        private string currentClass, currentFunction, currentID, paramList, procName, notFlag = "", currentVariable, currentTemp, temp, oprTemp, endLabel="", forTemp="", switchTemp="", switchEndLabel="";
+        private Boolean paramFlag = false;
 
         public ParseTree()
         {
@@ -338,6 +339,7 @@ namespace LexicalAnalyzer
                 if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
                     status = Exp(ref t2);
+                    helpers.genIC(currentVariable + " = " + currentID);
                 }
                 else
                 {
@@ -352,6 +354,7 @@ namespace LexicalAnalyzer
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
+                currentVariable = tokenSet.ElementAt(0).value;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstCond3_1.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowCond3_1.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
@@ -359,6 +362,16 @@ namespace LexicalAnalyzer
                 }
                 else if (tokenSet.ElementAt(0).classKeyword == "inc" || tokenSet.ElementAt(0).classKeyword == "dec")
                 {
+                    if (tokenSet.ElementAt(0).classKeyword == "inc")
+                    {
+                        currentID = " + 1";
+                    }
+                    else
+                    {
+                        currentID = " - 1";
+                    }
+                    //helpers.genIC(currentVariable+" = "+currentVariable+ currentID);
+                    forTemp = currentVariable + " = " + currentVariable + currentID;
                     tokenSet.RemoveAt(0);
                 }
                 else
@@ -369,9 +382,19 @@ namespace LexicalAnalyzer
             }
             else if (tokenSet.ElementAt(0).classKeyword == "inc" || tokenSet.ElementAt(0).classKeyword == "dec")
             {
+                if (tokenSet.ElementAt(0).classKeyword == "inc")
+                {
+                    currentID = " + 1";
+                }
+                else
+                {
+                    currentID = " - 1";
+                }
                 tokenSet.RemoveAt(0);
                 if (tokenSet.ElementAt(0).classKeyword == "ID")
                 {
+                    //helpers.genIC(tokenSet.ElementAt(0).value + " = "+tokenSet.ElementAt(0).value+ currentID);
+                    forTemp = tokenSet.ElementAt(0).value + " = " + tokenSet.ElementAt(0).value + currentID;
                     tokenSet.RemoveAt(0);
                 }
                 else
@@ -412,6 +435,7 @@ namespace LexicalAnalyzer
                     if (First_N_Follow.FirstMST.Contains(tokenSet.ElementAt(0).classKeyword))
                     {
                         status = MST();
+                        helpers.genIC("jmp " + switchEndLabel);
                     }
                     else
                     {
@@ -442,12 +466,16 @@ namespace LexicalAnalyzer
                 if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
                     status = Exp(ref t2);
+                    string l1 = helpers.createLabel();
+                    helpers.genIC("if (" + switchTemp + " != " + currentID + ") jmp " + l1);
                     if (tokenSet.ElementAt(0).classKeyword == ":")
                     {
                         tokenSet.RemoveAt(0);
                         if (First_N_Follow.FirstMST.Contains(tokenSet.ElementAt(0).classKeyword) && status)
                         {
                             status = MST();
+                            helpers.genIC("jmp " + switchEndLabel);
+                            helpers.genIC(l1 + ":");
                         }
                         else
                         {
@@ -513,6 +541,7 @@ namespace LexicalAnalyzer
                     if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
                     {
                         status = Exp(ref t2);
+                        switchTemp = currentID;
                         if (tokenSet.ElementAt(0).classKeyword == ")" && status)
                         {
                             tokenSet.RemoveAt(0);
@@ -578,6 +607,7 @@ namespace LexicalAnalyzer
                 if (tokenSet.ElementAt(0).classKeyword == "ID")
                 {
                     string name2 = tokenSet.ElementAt(0).value;
+                    currentVariable += "." + name2;
                     type = helpers.lookupFT(name2, type);
                     if (type == "int" || type == "float" || type == "char" || type == "string")
                     {
@@ -621,6 +651,7 @@ namespace LexicalAnalyzer
                 {
                     string paralist = "";
                     status = Params(ref paralist);
+                    helpers.genIC(name + " = call " + currentVariable);
                     string[] splitString = type.Split('-');
                     if(splitString[1] != paralist)
                     {
@@ -762,6 +793,7 @@ namespace LexicalAnalyzer
                 if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
                     status = Exp(ref t2);
+                    helpers.genIC(name + " " + opr + " " + currentID);
                     if (helpers.Compatible(t1, t2, opr)=="")
                     {
                         SemanticErrors.Add("Type Mismatch At " + tokenSet.ElementAt(0).lineNumber);
@@ -790,6 +822,7 @@ namespace LexicalAnalyzer
                     SemanticErrors.Add("Type Mismatch At " + tokenSet.ElementAt(0).lineNumber);
                     return false;
                 }
+                helpers.genIC(name + " " + opr + " " + tokenSet.ElementAt(0).value);
                 tokenSet.RemoveAt(0);
                 if (tokenSet.ElementAt(0).classKeyword == "ter")
                 {
@@ -809,13 +842,14 @@ namespace LexicalAnalyzer
             return true;
         }
         bool AssignCall()
-        {
+         {
             bool status = true;
             string name = "";
             string type = "";
             if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
                 name = tokenSet.ElementAt(0).value;
+                currentVariable = name;
                 type = helpers.lookupFT(name, ClassName);
                 tokenSet.RemoveAt(0);
                 if (tokenSet.ElementAt(0).classKeyword == "." || First_N_Follow.FollowAssignList.Contains(tokenSet.ElementAt(0).classKeyword))
@@ -1010,6 +1044,7 @@ namespace LexicalAnalyzer
                     if (tokenSet.ElementAt(0).classKeyword == "ID")
                     {
                         name = tokenSet.ElementAt(0).value;
+                        currentVariable = name;
                         tokenSet.RemoveAt(0);
                         if(!helpers.insertFT(name, type))
                         {
@@ -1024,6 +1059,7 @@ namespace LexicalAnalyzer
                             {
                                 string t2 = "";
                                 status = Exp(ref t2);
+                                helpers.genIC(currentVariable + " = " + currentID);
                                 string[] temp = t2.Split('-');
                                 t2 = temp[0];
                                 type += "_const";
@@ -1147,6 +1183,7 @@ namespace LexicalAnalyzer
             else if(tokenSet.ElementAt(0).classKeyword == "this")
             {
                 type = ClassName;
+                currentVariable = "this";
                 tokenSet.RemoveAt(0);
                 if(tokenSet.ElementAt(0).classKeyword == ".")
                 {
@@ -1170,6 +1207,7 @@ namespace LexicalAnalyzer
             else if (tokenSet.ElementAt(0).classKeyword == "base")
             {
                 type = helpers.lookupParent(ClassName);
+                currentVariable = "base";
                 tokenSet.RemoveAt(0);
                 if (type == "")
                 {
@@ -1204,6 +1242,7 @@ namespace LexicalAnalyzer
                 errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
+            currentVariable = "";
             return status;
         }
         bool List3()
@@ -1212,14 +1251,14 @@ namespace LexicalAnalyzer
             if (tokenSet.ElementAt(0).classKeyword == "else")
             {
                 tokenSet.RemoveAt(0);
-                if (First_N_Follow.FirstBody.Contains(tokenSet.ElementAt(0).classKeyword))
-                {
-                    status = Body();
-                }
-                else if (tokenSet.ElementAt(0).classKeyword == "if")
+                if (tokenSet.ElementAt(0).classKeyword == "if")
                 {
                     status = If_Else();
                 }
+                else if (First_N_Follow.FirstBody.Contains(tokenSet.ElementAt(0).classKeyword))
+                {
+                    status = Body();
+                } 
                 else
                 {
                     errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
@@ -1241,6 +1280,8 @@ namespace LexicalAnalyzer
                     if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
                     {
                         status = Exp(ref t2);
+                        string l1=helpers.createLabel();
+                        helpers.genIC("if ( " + currentID + "!= true ) jmp " + l1);
                         if (t2 != "int_const")
                         {
                             SemanticErrors.Add("Type Mismatch Error At " + tokenSet.ElementAt(0).lineNumber);
@@ -1252,6 +1293,8 @@ namespace LexicalAnalyzer
                             if (First_N_Follow.FirstBody.Contains(tokenSet.ElementAt(0).classKeyword))
                             {
                                 status = Body();
+                                helpers.genIC("jmp " + endLabel);
+                                helpers.genIC(l1 + ":");
                                 if ((tokenSet.ElementAt(0).classKeyword == "else" || First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword) && status))
                                 {
                                     status = List3();
@@ -1340,6 +1383,8 @@ namespace LexicalAnalyzer
             if (tokenSet.ElementAt(0).classKeyword == "do")
             {
                 tokenSet.RemoveAt(0);
+                string l1 = helpers.createLabel();
+                helpers.genIC(l1 + ":");
                 if (First_N_Follow.FirstBody.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
                     status = Body();
@@ -1352,6 +1397,7 @@ namespace LexicalAnalyzer
                             if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
                             {
                                 status = Exp(ref t2);
+                                helpers.genIC("if (" + currentID + " == true) jmp " + l1);
                                 if(t2 != "int_const")
                                 {
                                     SemanticErrors.Add("Type Mismatch Error At " + tokenSet.ElementAt(0).lineNumber);
@@ -1419,13 +1465,18 @@ namespace LexicalAnalyzer
                     tokenSet.RemoveAt(0);
                     if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
                     {
+                        string l1 = helpers.createLabel(), l2 = helpers.createLabel();
+                        helpers.genIC(l1 + ":");
                         status = Exp(ref t2);
+                        helpers.genIC("if (" + currentID + "== false) jmp " + l2);
                         if (tokenSet.ElementAt(0).classKeyword == ")" && status)
                         {
                             tokenSet.RemoveAt(0);
                             if (First_N_Follow.FirstBody.Contains(tokenSet.ElementAt(0).classKeyword))
                             {
                                 status = Body();
+                                helpers.genIC("jmp "+l1);
+                                helpers.genIC(l2 + ":");
                             }
                         }
                         else
@@ -1469,6 +1520,8 @@ namespace LexicalAnalyzer
                         //if(tokenSet.ElementAt(0).classKeyword=="ter" && status)
                         //{
                         //    tokenSet.RemoveAt(0);
+                        string l1 = helpers.createLabel();
+                        helpers.genIC(l1 + ":");
                         if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
                         {
                             status = Exp(ref t2);
@@ -1480,6 +1533,8 @@ namespace LexicalAnalyzer
                             if (tokenSet.ElementAt(0).classKeyword == "ter" && status)
                             {
                                 tokenSet.RemoveAt(0);
+                                string l2 = helpers.createLabel();
+                                helpers.genIC("if (" + currentID + " == false) jmp " + l2);
                                 if (First_N_Follow.FirstCond3.Contains(tokenSet.ElementAt(0).classKeyword))
                                 {
                                     status = Cond3();
@@ -1489,6 +1544,8 @@ namespace LexicalAnalyzer
                                         if (First_N_Follow.FirstBody.Contains(tokenSet.ElementAt(0).classKeyword))
                                         {
                                             status = Body();
+                                            helpers.genIC(forTemp);
+                                            helpers.genIC(l2 + ":");
                                         }
                                         else
                                         {
@@ -1550,10 +1607,16 @@ namespace LexicalAnalyzer
             bool status = true;
             if (First_N_Follow.FirstLoop_Str.Contains(tokenSet.ElementAt(0).classKeyword))
                 status = Loop_Str();
-            else if (tokenSet.ElementAt(0).classKeyword == "if")
+            else if (tokenSet.ElementAt(0).classKeyword == "if"){
+                endLabel = helpers.createLabel();
                 status = If_Else();
-            else if (tokenSet.ElementAt(0).classKeyword == "switch")
+                helpers.genIC(endLabel + ":");
+            }
+            else if (tokenSet.ElementAt(0).classKeyword == "switch"){
+                switchEndLabel = helpers.createLabel();
                 status = Switch();
+                helpers.genIC(switchEndLabel + ":");
+            }
             else if (First_N_Follow.FirstAssignCall.Contains(tokenSet.ElementAt(0).classKeyword))
             {
                 status = AssignCall();
@@ -1665,6 +1728,10 @@ namespace LexicalAnalyzer
                 {
                     SemanticErrors.Add("Type Mismatch in assigning At " + tokenSet.ElementAt(0).lineNumber);
                     status = false;
+                }
+                else
+                {
+                    helpers.genIC(currentVariable + " = " + tokenSet.ElementAt(0).value);
                 }
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstInit.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowInit.Contains(tokenSet.ElementAt(0).classKeyword) && status)
@@ -1783,7 +1850,9 @@ namespace LexicalAnalyzer
             if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
             {
                 string t2 = "";
+                paramFlag = true;
                 status = Exp(ref t2);
+                paramFlag = false;
                 Regex rg = new Regex("_const$");
                 if (rg.IsMatch(t2))
                 {
@@ -1833,10 +1902,15 @@ namespace LexicalAnalyzer
             if (tokenSet.ElementAt(0).classKeyword == "||")
             {
                 opr = "||";
+                string t = currentID, o = opr;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
                     status = AND(ref t1);
+                    temp = helpers.createTemp();
+                    helpers.genIC(temp + " = " + t + o + currentID);
+                    currentTemp = temp;
+                    currentID = temp;
                     if (tokenSet.ElementAt(0).classKeyword == "||" || First_N_Follow.FollowExp.Contains(tokenSet.ElementAt(0).classKeyword))
                     {
                         status = RO1(ref t1);
@@ -1888,10 +1962,15 @@ namespace LexicalAnalyzer
             if (tokenSet.ElementAt(0).classKeyword == "&&")
             {
                 opr = "&&";
+                string t = currentID, o = opr;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
                     status = ROP(ref t1);
+                    temp = helpers.createTemp();
+                    helpers.genIC(temp + " = " + t + o + currentID);
+                    currentTemp = temp;
+                    currentID = temp;
                     if (First_N_Follow.FollowAND1.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowExp.Contains(tokenSet.ElementAt(0).classKeyword) && status)
                     {
                         status = AND1(ref t1);
@@ -1925,10 +2004,15 @@ namespace LexicalAnalyzer
             if (tokenSet.ElementAt(0).classKeyword == "RO")
             {
                 opr = tokenSet.ElementAt(0).value;
+                string t = currentID, o = opr;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
                     status = PM(ref t1);
+                    temp = helpers.createTemp();
+                    helpers.genIC(temp + " = " + t + o + currentID);
+                    currentTemp = temp;
+                    currentID = temp;
                     if (First_N_Follow.FollowROP1.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowExp.Contains(tokenSet.ElementAt(0).classKeyword) && status)
                     {
                         status = ROP1(ref t1);
@@ -2000,10 +2084,15 @@ namespace LexicalAnalyzer
             if (tokenSet.ElementAt(0).classKeyword == "PM")
             {
                 opr = tokenSet.ElementAt(0).value;
+                string t = currentID, o = opr;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
                     status = MDM(ref t1);
+                    temp = helpers.createTemp();
+                    helpers.genIC(temp + " = " + t + o + currentID);
+                    currentTemp = temp;
+                    currentID = temp;
                     if (First_N_Follow.FollowPM1.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowExp.Contains(tokenSet.ElementAt(0).classKeyword) && status)
                     {
                         status = PM1(ref t1);
@@ -2023,6 +2112,7 @@ namespace LexicalAnalyzer
             if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
             {
                 status = F(ref t1);
+                currentTemp = currentID;
                 if (First_N_Follow.FollowMDM1.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowExp.Contains(tokenSet.ElementAt(0).classKeyword) && status)
                 {
                     status = MDM1(ref t1);
@@ -2041,10 +2131,15 @@ namespace LexicalAnalyzer
             if (tokenSet.ElementAt(0).classKeyword == "MDM")
             {
                 opr = tokenSet.ElementAt(0).value;
+                oprTemp = opr;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
                     status = F(ref t1);
+                    temp = helpers.createTemp();
+                    helpers.genIC(temp + " = " + currentTemp + oprTemp + currentID);
+                    currentTemp = temp;
+                    currentID = temp;
                     if (First_N_Follow.FollowMDM1.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowExp.Contains(tokenSet.ElementAt(0).classKeyword) && status)
                     {
                         status = MDM1(ref t1);
@@ -2065,9 +2160,12 @@ namespace LexicalAnalyzer
         }
         bool F(ref string t1)
         {
+            currentID = notFlag;
+            notFlag = "";
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "this")
             {
+                currentID += tokenSet.ElementAt(0).value;
                 tokenSet.RemoveAt(0);
                 t1 = ClassName;
                 status = DEC_INC(ref t1);
@@ -2082,6 +2180,7 @@ namespace LexicalAnalyzer
                 else
                 {
                     t1 = tokenSet.ElementAt(0).value;
+                    currentID += tokenSet.ElementAt(0).value;
                     tokenSet.RemoveAt(0);
                     if (First_N_Follow.FirstDec_inc.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowDec_inc.Contains(tokenSet.ElementAt(0).classKeyword))
                     {
@@ -2114,6 +2213,7 @@ namespace LexicalAnalyzer
                         t2 = opr = "";
                     }
                 }
+                currentID += tokenSet.ElementAt(0).value;
                 tokenSet.RemoveAt(0);
             }
             else if (tokenSet.ElementAt(0).classKeyword == "(")
@@ -2140,6 +2240,7 @@ namespace LexicalAnalyzer
             }
             else if (tokenSet.ElementAt(0).classKeyword == "!")
             {
+                notFlag = "!";
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstAnd.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
@@ -2153,9 +2254,18 @@ namespace LexicalAnalyzer
             }
             else if (tokenSet.ElementAt(0).classKeyword == "inc" || tokenSet.ElementAt(0).classKeyword == "dec")
             {
+                if (tokenSet.ElementAt(0).classKeyword == "inc")
+                {
+                    currentID += " + 1";
+                }
+                else
+                {
+                    currentID += " - 1";
+                }
                 tokenSet.RemoveAt(0);
                 if (tokenSet.ElementAt(0).classKeyword == "ID")
                 {
+                    currentID += tokenSet.ElementAt(0).value;
                     tokenSet.RemoveAt(0);
                 }
                 else
@@ -2173,6 +2283,11 @@ namespace LexicalAnalyzer
                 errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
+            if(paramFlag)
+            {
+                helpers.genIC("param " + currentID);
+            }
+
             return status;
         }
         bool DEC_INC_RE(ref string t1)
@@ -2332,7 +2447,9 @@ namespace LexicalAnalyzer
                 if (First_N_Follow.FirstParams.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowParams.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
                     string paralist = "ctor-";
+                    temp = currentID;
                     status = Params(ref paralist);
+                    currentID = "call "+temp;
                     //if(type != paralist)
                     //{
                     //     SemanticErrors.Add("Use of Undeclared variable At " + tokenSet.ElementAt(0).lineNumber);
@@ -2605,6 +2722,7 @@ namespace LexicalAnalyzer
                 errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                 status = false;
             }
+            helpers.genIC("endp");
             return status;
         }
         bool Ass(string t1)
@@ -2655,6 +2773,7 @@ namespace LexicalAnalyzer
                     {
                         t1 += "_const";
                     }
+                    helpers.genIC(currentVariable+" = "+tokenSet.ElementAt(0).value);
                 }
                 if (helpers.Compatible(t1, tokenSet.ElementAt(0).classKeyword, "=") == "")
                 {
@@ -2843,8 +2962,9 @@ namespace LexicalAnalyzer
             if (tokenSet.ElementAt(0).classKeyword == "ID")
             {
                 name = tokenSet.ElementAt(0).value;
+                currentVariable = name;
                 tokenSet.RemoveAt(0);
-                if (First_N_Follow.FirstAss.Contains(tokenSet.ElementAt(0).classKeyword))
+                if (First_N_Follow.FirstAss.Contains(tokenSet.ElementAt(0).classKeyword)) //ID
                 {
                     if (!helpers.insertCT(name, type, am, tm ,Ref))
                     {
@@ -3127,7 +3247,7 @@ namespace LexicalAnalyzer
                     }
                     else
                     {
-                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(helpers.genIC(procName);0).classKeyword, tokenSet.ElementAt(0).wordNumber));
+                        errorLine.Add(new ParseError(tokenSet.ElementAt(0).lineNumber, tokenSet.ElementAt(0).classKeyword, tokenSet.ElementAt(0).wordNumber));
                         status = false;
                     }
                 }

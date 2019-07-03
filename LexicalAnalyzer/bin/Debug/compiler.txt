@@ -10,23 +10,26 @@ class hey{
         while(5<3){
             int[] d;
         }
+        for(int j=0;9==9;j++){
+            j = 10;
+        }
     }
     public hey(){
         char kk;
     }
 }
 class hh{
-	int a = 50;	
+    int a = 50; 
     public void main(){
         int a = this.a;
         //hey g = new hey();
-	//g.main(a);
-	this.a = 10;
+    //g.main(a);
+    this.a = 10;
     }
 }
 class heloo extend hey{
     public void main(){
         string b = "Hello";
-	base.hellow(10);
+    base.hellow(10);
     }
 }
