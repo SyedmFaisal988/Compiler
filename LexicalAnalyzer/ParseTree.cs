@@ -17,7 +17,7 @@ namespace LexicalAnalyzer
         ClassData Ref;
 
         //IC Variables
-        private string currentClass, currentFunction, currentID, paramList, procName, notFlag = "", currentVariable, currentTemp, temp, oprTemp, endLabel="", forTemp="", switchTemp="", switchEndLabel="";
+        private string currentClass, currentFunction, currentID, paramList, procName, notFlag = "", currentVariable, currentTemp, temp, oprTemp, endLabel="", forTemp="", switchTemp="", switchEndLabel="", thisFlag="";
         private Boolean paramFlag = false;
 
         public ParseTree()
@@ -686,9 +686,11 @@ namespace LexicalAnalyzer
             else if (tokenSet.ElementAt(0).classKeyword == "assign" || tokenSet.ElementAt(0).classKeyword == "compAss")
             {
                 string opr = tokenSet.ElementAt(0).value;
+                oprTemp = opr;
                 tokenSet.RemoveAt(0);
                 if (First_N_Follow.FirstCall.Contains(tokenSet.ElementAt(0).classKeyword))
                 {
+                    name = currentVariable;
                     status = Call(type,name, opr);
                 }
                 else
@@ -823,7 +825,7 @@ namespace LexicalAnalyzer
                     SemanticErrors.Add("Type Mismatch At " + tokenSet.ElementAt(0).lineNumber);
                     return false;
                 }
-                helpers.genIC(name + " " + opr + " " + tokenSet.ElementAt(0).value);
+                helpers.genIC(name + " " + opr + " " + currentID);
                 //tokenSet.RemoveAt(0);
                 if (tokenSet.ElementAt(0).classKeyword == "ter")
                 {
@@ -1055,6 +1057,7 @@ namespace LexicalAnalyzer
                         if (tokenSet.ElementAt(0).classKeyword == "assign")
                         {
                             opr = tokenSet.ElementAt(0).value;
+                            oprTemp = opr;
                             tokenSet.RemoveAt(0);
                             if (First_N_Follow.FirstExp.Contains(tokenSet.ElementAt(0).classKeyword))
                             {
@@ -2161,12 +2164,13 @@ namespace LexicalAnalyzer
         }
         bool F(ref string t1)
         {
-            currentID = notFlag;
+            currentID = notFlag+thisFlag;
+            thisFlag = "";
             notFlag = "";
             bool status = true;
             if (tokenSet.ElementAt(0).classKeyword == "this")
             {
-                currentID += tokenSet.ElementAt(0).value;
+                currentID += tokenSet.ElementAt(0).value+".";
                 tokenSet.RemoveAt(0);
                 t1 = ClassName;
                 status = DEC_INC(ref t1);
@@ -2450,7 +2454,7 @@ namespace LexicalAnalyzer
                     string paralist = "ctor-";
                     temp = currentID;
                     status = Params(ref paralist);
-                    currentID = "call "+temp;
+                    currentID = "--------call "+currentClass+"-"+temp;
                     //if(type != paralist)
                     //{
                     //     SemanticErrors.Add("Use of Undeclared variable At " + tokenSet.ElementAt(0).lineNumber);
@@ -2488,6 +2492,7 @@ namespace LexicalAnalyzer
                         SemanticErrors.Add("Use of Undeclared Variable At " + tokenSet.ElementAt(0).lineNumber);
                         return false;
                     }
+                    currentID += tokenSet.ElementAt(0).value;
                     tokenSet.RemoveAt(0);
                     if (First_N_Follow.FirstDec_inc.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowMDM1.Contains(tokenSet.ElementAt(0).classKeyword) || First_N_Follow.FollowExp.Contains(tokenSet.ElementAt(0).classKeyword))
                     {

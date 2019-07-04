@@ -445,12 +445,21 @@ namespace LexicalAnalyzer
             mess = "";
             foreach(var classs in PT.helpers.ClassesTable)
             {
-                mess += "Name: " + classs.Name + " Parent: " + classs.Parent + " Category: " + classs.Category + " Type: " + classs.Type + " \n";
+                mess += "Name: " + classs.Name + " Parent: " + classs.Parent + " Category: " + classs.Category + " Type: " + classs.Type + " \r\n";
             }
             sw = new System.IO.StreamWriter("Classes.txt");
             sw.Write(mess);
             sw.Close();
             MessageBox.Show(PT.helpers.IC);
+            //mess = "";
+            //string[] temp = PT.helpers.IC.Split('\n');
+            //foreach (var t in temp)
+            //{
+            //    mess += t + " \n";
+            //}
+            sw = new System.IO.StreamWriter("IntermediateCode.txt");
+            sw.WriteAsync(PT.helpers.IC);
+            sw.Close();
         }
         public bool regexCheck(dynamic keyword, int type)
         {

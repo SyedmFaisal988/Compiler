@@ -1,0 +1,29 @@
+Intermediate Code:
+h = he
+hey-hellow-int_const proc
+b = 10
+endp
+hey-abs- proc
+endp
+hey-main-int_const proc
+h = hello
+param a
+bd = --------call hey-hellow
+L0:
+t0 = 5<3
+if (t0== false) jmp L1
+jmp L0
+L1:
+j = 0
+L2:
+t1 = 9==9
+if (t1 == false) jmp L3
+j = 10
+j = j + 1
+L3:
+endp
+hey-hey- proc
+endp
+heloo-main- proc
+b = Hello
+endp
