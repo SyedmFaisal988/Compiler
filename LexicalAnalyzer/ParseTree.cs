@@ -817,13 +817,14 @@ namespace LexicalAnalyzer
             }
             else if (First_N_Follow.FirstConst.Contains(tokenSet.ElementAt(0).classKeyword))
             {
-                if(helpers.Compatible(t1, tokenSet.ElementAt(0).classKeyword ,opr) == "")
+                Exp(ref t2);
+                if(helpers.Compatible(t1, t2 ,opr) == "")
                 {
                     SemanticErrors.Add("Type Mismatch At " + tokenSet.ElementAt(0).lineNumber);
                     return false;
                 }
                 helpers.genIC(name + " " + opr + " " + tokenSet.ElementAt(0).value);
-                tokenSet.RemoveAt(0);
+                //tokenSet.RemoveAt(0);
                 if (tokenSet.ElementAt(0).classKeyword == "ter")
                 {
                     tokenSet.RemoveAt(0);
@@ -2506,7 +2507,8 @@ namespace LexicalAnalyzer
             }
             else
             {
-                if(t1=="")
+                Regex rg = new Regex("_const$");
+                if(!rg.IsMatch(t1))
                     t1 = helpers.lookupFT(t1, ClassName);
             }
             return status;

@@ -8,3 +8,5 @@ Name: j, Scope 2, Type: int_const
 Name: kk, Scope 3, Type: char_const
 Name: a, Scope 4, Type: int_const
 Name: b, Scope 5, Type: string_const
+Name: a, Scope 6, Type: int_const
+Name: j, Scope 6, Type: int_const

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LexicalAnalyzer
@@ -15,7 +15,15 @@ namespace LexicalAnalyzer
         }
         public bool addRow(string name, string type, string am, string tm)
         {
-            foreach(var temp in classData)
+            if (type == "int" || type == "float" || type == "char" || type == "string")
+            {
+                Regex rg = new Regex("_const$");
+                if (!rg.IsMatch(type))
+                {
+                    type += "_const";
+                }
+            }
+            foreach (var temp in classData)
             {
                 if(temp.Name == name)
                 {

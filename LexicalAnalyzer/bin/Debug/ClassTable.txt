@@ -1,6 +1,6 @@
 --------New Class------------
 Name: hey, Type: class, Category: abstract, Parent: 
-Name: h, Tm general, Am: private, Type: string
+Name: h, Tm general, Am: private, Type: string_const
 Name: hellow, Tm general, Am: private, Type: int_const-int_const
 Name: abs, Tm abstract, Am: public, Type: void-
 Name: main, Tm general, Am: public, Type: int_const-int_const
@@ -8,10 +8,15 @@ Name: hey, Tm general, Am: public, Type: ctor-
 
 --------New Class------------
 Name: hh, Type: class, Category: , Parent: 
-Name: a, Tm general, Am: private, Type: int
+Name: a, Tm general, Am: private, Type: int_const
 Name: main, Tm general, Am: public, Type: void-
 
 --------New Class------------
 Name: heloo, Type: class, Category: , Parent: hey
 Name: main, Tm general, Am: public, Type: void-
+
+--------New Class------------
+Name: test, Type: class, Category: , Parent: 
+Name: j, Tm general, Am: private, Type: int_const
+Name: fn, Tm general, Am: private, Type: void-
 

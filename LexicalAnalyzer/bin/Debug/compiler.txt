@@ -33,3 +33,16 @@ class heloo extend hey{
     base.hellow(10);
     }
 }
+class test{
+    int j=0;
+    void fn(){
+        int a = 1;
+        a = a + 9*0;
+        for(int j=0;j<9;j++){
+            j = a;
+        }
+        while(a==9){
+            a = 8;
+        }
+    }
+}
